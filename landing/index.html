@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>垃圾分类投放引导助手</title>
+<meta name="description" content="把一件复合垃圾拆成该投的几部分：拍照识别部件，按规则库判定投放类别与投前动作。">
+<link rel="stylesheet" href="styles.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#3A4032">
+<link rel="icon" type="image/png" sizes="192x192" href="/pwa/icon-192.png">
+<link rel="apple-touch-icon" href="/pwa/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="垃圾投放引导">
+</head>
+<body>
+
+<header class="topbar">
+  <span class="wordmark">垃圾分类投放引导助手</span>
+  <nav>
+    <a href="#problem">问题</a>
+    <a href="#method">方案</a>
+    <a href="#data">实测数据</a>
+    <a class="btn btn-primary" href="/">打开原型</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============================================================ Hero
+       非对称分栏：文案在左，真实照片在右。
+       文案元素 3 个：标题、说明、按钮组。无眉标、无 CTA 下方小字。 -->
+  <section class="hero wrap" id="top">
+    <div>
+      <h1>把一件垃圾，拆成该投的几部分</h1>
+      <p class="lede">
+        拍照识别画面里的每个部件，逐个给出投放类别与投前动作。
+        奶茶、外卖餐盒、泡面桶这类复合垃圾，是它的主战场。
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/">打开原型</a>
+        <a class="btn btn-ghost" href="#data">看实测数据</a>
+      </div>
+    </div>
+    <figure class="hero-figure">
+      <img src="assets/hero-bin-mixed.jpg" width="760" height="1095"
+           alt="投放点的绿色垃圾桶，桶内混有塑料袋、纸板、金属罐与木框">
+      <figcaption class="cap">
+        投放点的厨余桶。桶里的塑料袋、纸板、金属罐、木框，没有一件属于这一桶。
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ============================================================ 问题 -->
+  <section id="problem">
+    <div class="wrap">
+      <h2>分类记住了，套不上</h2>
+      <p class="lede">
+        学生能分清单一物品，但一杯没喝完的奶茶不是「一件垃圾」。
+        现有的查询工具只回答某物属于哪一类，不回答要拆成几部分、投之前先做什么。
+      </p>
+
+      <!-- 变高宽比、非等分网格：左侧一张竖构图，右侧两张横构图 -->
+      <div class="evidence">
+        <figure class="evidence-tall reveal">
+          <img src="assets/evidence-recyclable-bin.jpg" width="237" height="500"
+               alt="可回收物桶内部，可见塑料瓶、纸盒与易拉罐">
+          <figcaption class="cap">
+            另一只可回收物桶。塑料瓶、纸盒、易拉罐，全都投对了。
+          </figcaption>
+        </figure>
+        <figure class="reveal">
+          <img src="assets/evidence-battery-pile.jpg" width="787" height="500"
+               alt="一批废旧手机电池，含锂电池与塑料外壳">
+          <figcaption class="cap">
+            一批废旧手机电池。含重金属，属于有害垃圾，不能随其他垃圾丢弃。
+          </figcaption>
+        </figure>
+        <figure class="reveal">
+          <img src="assets/evidence-ewaste-pile.jpg" width="1080" height="720"
+               alt="电子废弃物拆解堆，可见手机外壳、屏幕、电路板与卡托">
+          <figcaption class="cap">
+            电子废弃物拆解堆。外壳、屏幕、电路板、卡托，各有各的回收渠道。
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ 方案 -->
+  <section id="method">
+    <div class="wrap">
+      <h2>感知、判定、生成，各归其位</h2>
+      <p class="lede">
+        这套系统没有让大模型包办一切。确定性的事交给规则，需要理解的事才交给模型。
+      </p>
+
+      <div class="layers">
+        <div class="layer reveal">
+          <h3>感知</h3>
+          <p>
+            多模态模型只回答「画面里有什么」，把复合物品拆成部件清单。
+            它不判断这是哪一类垃圾，也不决定投哪个桶。
+          </p>
+        </div>
+        <div class="layer reveal">
+          <h3>判定</h3>
+          <p>
+            部件清单交给规则库。类别归属依赖城市标准与现场条件，
+            餐盒有没有冲洗干净会直接改变结论。这类判断必须准确，而且事后能一条条核对。
+          </p>
+        </div>
+        <div class="layer reveal">
+          <h3>生成</h3>
+          <p>
+            引导文案由规则模板产出，保证每次说法一致；
+            需要解释依据时再检索知识库，回答里会附上引用来源。
+          </p>
+        </div>
+      </div>
+
+      <p class="lede" style="margin-top:36px">
+        分工最实际的收益是，模型识别错了，只影响部件清单，类别判定不会跟着错。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ 实测数据 -->
+  <section id="data">
+    <div class="wrap">
+      <h2>在一组真实照片上跑出来的结果</h2>
+      <p class="lede">
+        28 张真实场景实拍照片，从投放点扩到社区街道、河道与户外堆积点，
+        共识别出 263 个部件。以下每个数字都能在本仓库的评测产出里复算。
+      </p>
+
+      <div class="metrics">
+        <div class="metric reveal">
+          <b>100%</b>
+          <span>规则覆盖率。263 个识别部件全部被规则库接住，没有落空项。</span>
+        </div>
+        <div class="metric reveal">
+          <b>1.000</b>
+          <span>类别判定准确率。28 个应拆部件的人工标注结果，全部与系统输出一致。</span>
+        </div>
+        <div class="metric reveal">
+          <b>1.000</b>
+          <span>地区标签一致性。通用、北京、上海、广州四套口径逐一回归，切换后输出里不会混进上一套叫法。</span>
+        </div>
+        <div class="metric reveal">
+          <b>20 / 20</b>
+          <span>问答评测通过题数。含 15 题范围内、3 题范围外拒答、2 题边界样本。</span>
+        </div>
+        <div class="metric reveal">
+          <b>0.900</b>
+          <span>平均检索关键词覆盖率。这是本轮里唯一没有满分的一项，仍是后续优化重点。</span>
+        </div>
+        <div class="metric reveal">
+          <b>约 1016</b>
+          <span>单张照片识别消耗的 token 数。用于估算部署成本与免费额度可支撑的调用量。</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ 迭代过程 -->
+  <section id="iteration">
+    <div class="wrap">
+      <h2>覆盖率从 38% 补到 100%，用了四轮</h2>
+      <p class="lede">
+        规则库最初是按奶茶、外卖、快递箱设计的。每换一批照片、换一类场景，缺口就再露一次。
+      </p>
+
+      <div class="rounds">
+        <div class="round reveal">
+          <b>38.24%</b>
+          <strong>第一批 6 张</strong>
+          <p>
+            34 个识别部件里，21 个没有被规则接住。
+            缺口集中在电子废弃物零件、塑料瓶类与包装碎片。
+          </p>
+        </div>
+        <div class="round reveal">
+          <b>77.14%</b>
+          <strong>第二批扩到 9 张</strong>
+          <p>
+            补上 18 条规则后前一批已经全接住，但换成大件场景又掉下来。
+            木材、家电外壳、轮胎当时一条规则都没有。
+          </p>
+        </div>
+        <div class="round reveal">
+          <b>100%</b>
+          <strong>第三批扩到 13 张</strong>
+          <p>
+            新增「大件与废品」规则组后，
+            13 张照片的 125 个部件全部覆盖。
+          </p>
+        </div>
+        <div class="round reveal">
+          <b>93.92%</b>
+          <strong>第四批扩到 28 张</strong>
+          <p>
+            照片从投放点扩到社区街道、河道与户外堆积点，
+            装修废料、户外杂物等 15 类没被接住；补齐后 263 个部件全部覆盖。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ 结尾 -->
+  <section id="open">
+    <div class="wrap closing">
+      <div>
+        <h2>打开原型，拍一张试试</h2>
+        <p class="lede">
+          浏览器直接打开，不用装 App。识别走真实多模态模型，类别判定由规则库完成，
+          规则文件可以按你所在城市的分类目录自行修改。
+        </p>
+      </div>
+      <a class="btn btn-primary" href="/">打开原型</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>
+       实测数据来自本项目的评测产出目录，可用仓库内的评测脚本复算。
+      规则覆盖率取自 <code>data/exports/</code> 的照片批处理报告，
+      类别判定与地区一致性取自 <code>eval/out/</code> 的拆解评测结果，
+      问答指标取自 <code>eval/out/</code> 的问答评测结果。
+    </p>
+    <p>
+      分类口径以所在城市现行分类目录为准。各地标准存在差异，本页展示的结论按通用四分类口径给出。
+    </p>
+    <p>
+      参赛材料中不含学校名称、标识与指导教师信息。
+    </p>
+  </div>
+</footer>
+
+<!-- GSAP + ScrollTrigger 本地化，断网也能跑；两个文件加起来 110 KB -->
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script>
+/*
+  动效分四层，都挂在 GSAP 上：
+    1) 首屏入场：标题、说明、按钮、配图按次序到位
+    2) 段落进场：ScrollTrigger.batch 替代原来手写的 IntersectionObserver
+    3) 数字滚动：指标卡与迭代卡的数字从 0 滚到目标值
+    4) 配图轻微视差：滚动时比正文慢一点，做出层次
+
+  两条兜底：
+    · gsap 没加载成功就把所有 .reveal 显示出来，内容不受影响
+    · 系统开了"减少动态效果"时只显示，不做动画（gsap.matchMedia 处理）
+*/
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  function showAll() {
+    items.forEach(function (el) { el.classList.add('is-in'); });
+  }
+
+  if (!window.gsap || !window.ScrollTrigger) { showAll(); return; }
+  gsap.registerPlugin(ScrollTrigger);
+
+  // 交给 GSAP 之后，CSS 那条兜底过渡要让位，否则两边会各动一次
+  document.documentElement.classList.add('gsap-on');
+
+  var mm = gsap.matchMedia();
+
+  mm.add(
+    { motion: '(prefers-reduced-motion: no-preference)', reduce: '(prefers-reduced-motion: reduce)' },
+    function (ctx) {
+      // 系统要求减少动态效果：只把内容显示出来
+      if (ctx.conditions.reduce) { showAll(); return; }
+
+      gsap.defaults({ ease: 'power2.out', duration: 0.7 });
+
+      // 1) 首屏入场。transform + autoAlpha，不动布局属性
+      var intro = gsap.timeline();
+      intro
+        .from('.hero h1', { y: 26, autoAlpha: 0 })
+        .from('.hero .lede', { y: 18, autoAlpha: 0 }, '-=0.45')
+        .from('.hero .cta-row > *', { y: 14, autoAlpha: 0, stagger: 0.08 }, '-=0.42')
+        .from('.hero-figure', { y: 30, autoAlpha: 0, scale: 0.99 }, 0.12);
+
+      // 2) 段落进场：同一个批次一起进来，按批次错开
+      ScrollTrigger.batch('.reveal', {
+        start: 'top 88%',
+        once: true,
+        onEnter: function (batch) {
+          batch.forEach(function (el) { el.classList.add('is-in'); });
+          gsap.fromTo(
+            batch,
+            { autoAlpha: 0, y: 20 },
+            { autoAlpha: 1, y: 0, duration: 0.62, stagger: 0.08, clearProps: 'all' }
+          );
+        }
+      });
+
+      // 3) 数字滚动：把已有的数值从 0 滚上去，保留原文字里的前后缀
+      function countUp(el) {
+        var raw = el.textContent;
+        var m = raw.match(/^(\D*?)(\d[\d,]*(?:\.\d+)?)([\s\S]*)$/);
+        if (!m) return;
+        var prefix = m[1];
+        var numStr = m[2];
+        var suffix = m[3];
+        var target = parseFloat(numStr.replace(/,/g, ''));
+        var decimals = (numStr.split('.')[1] || '').length;
+        var box = { v: 0 };
+        gsap.to(box, {
+          v: target, duration: 1.1, ease: 'power2.out',
+          onUpdate: function () {
+            var s = decimals ? box.v.toFixed(decimals) : String(Math.round(box.v));
+            el.textContent = prefix + s + suffix;
+          },
+          onComplete: function () { el.textContent = raw; }
+        });
+      }
+
+      ['.metrics', '.rounds'].forEach(function (sel) {
+        var host = document.querySelector(sel);
+        if (!host) return;
+        ScrollTrigger.create({
+          trigger: host,
+          start: 'top 82%',
+          once: true,
+          onEnter: function () {
+            host.querySelectorAll('b').forEach(countUp);
+          }
+        });
+      });
+
+      // 4) 配图轻微视差：只给首屏那张，幅度小
+      gsap.to('.hero-figure img', {
+        yPercent: -5,
+        ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+      });
+    }
+  );
+
+  // 图片加载完再量一次位置，避免触发点算错
+  window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+
+  // 万一上面某一步抛错导致内容还藏着，1.5 秒后无条件显示
+  setTimeout(function () {
+    document.querySelectorAll('.reveal:not(.is-in)').forEach(function (el) {
+      el.classList.add('is-in');
+    });
+  }, 1500);
+})();
+</script>
+
+</body>
+</html>

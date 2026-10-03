@@ -1,0 +1,149 @@
+/* ==========================================================================
+   垃圾分类投放引导 · 数据大屏（静态演示版）样式
+
+   设计取向参考可视化大屏：深色底、发光线条、3D 主视觉、浮动数据面板。
+   配色沿用项目已有的苔绿 / 沙 / 赭石体系，四分类桶色与方案书、答辩 PPT、
+   原型界面保持同一套。
+   ========================================================================== */
+
+:root{
+  --bg:#0B0E08;
+  --panel:rgba(232,220,199,.055);
+  --panel-2:rgba(232,220,199,.11);
+  --line:rgba(232,220,199,.15);
+  --sand:#E8DCC7;
+  --dim:#9C9280;
+  --dimmer:#7A7264;
+  --ochre:#C08E3A;
+  /* 四分类桶色 */
+  --recyclable:#4E86BE;
+  --kitchen:#7C9440;
+  --hazardous:#C0563A;
+  --residual:#8E8B80;
+  --font:"Noto Serif SC","Source Han Serif SC","Songti SC","Microsoft YaHei",serif;
+  --font-num:"IBM Plex Mono",Consolas,"Courier New",monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden}
+body{font-family:var(--font);color:var(--sand)}
+
+/* 1920×1080 设计稿，等比缩放到任意屏幕 */
+#stage{
+  position:absolute;top:0;left:0;width:1920px;height:1080px;
+  transform-origin:top left;
+  background:
+    radial-gradient(1200px 700px at 50% 6%, rgba(192,142,58,.10), transparent 62%),
+    radial-gradient(900px 600px at 12% 96%, rgba(78,134,190,.08), transparent 60%),
+    var(--bg);
+  display:grid;grid-template-rows:92px 1fr 54px;gap:14px;
+  padding:16px 22px 14px;
+}
+
+/* ---------------------------------------------------------------- 顶栏 */
+header{display:flex;align-items:center;justify-content:space-between;gap:24px;
+  border-bottom:1px solid var(--line);padding-bottom:10px}
+.brand{display:flex;align-items:baseline;gap:16px}
+.brand h1{font-size:31px;font-weight:700;letter-spacing:.02em}
+.brand .sub{font-size:15px;color:var(--dim);letter-spacing:.06em}
+.regions{display:flex;align-items:center;gap:10px}
+.regions .lbl{font-size:14px;color:var(--dimmer);letter-spacing:.1em}
+.chip{font-size:14px;padding:5px 14px;border-radius:999px;
+  border:1px solid var(--line);color:var(--dim)}
+.chip.on{border-color:rgba(192,142,58,.75);color:var(--sand);
+  background:rgba(192,142,58,.16)}
+.clock{text-align:right;line-height:1.35}
+.clock b{font-family:var(--font-num);font-size:26px;font-weight:500;letter-spacing:.04em}
+.clock span{display:block;font-size:13px;color:var(--dimmer);letter-spacing:.08em}
+
+/* ---------------------------------------------------------------- 主区 */
+main{display:grid;grid-template-columns:452px 1fr 452px;gap:14px;min-height:0}
+.col{display:grid;gap:12px;min-height:0}
+.col.left{grid-template-rows:1.12fr .86fr .78fr}
+.col.right{grid-template-rows:1.06fr .92fr .82fr}
+
+.panel{position:relative;background:var(--panel);border:1px solid var(--line);
+  border-radius:14px;padding:12px 14px 10px;min-height:0;display:flex;flex-direction:column}
+.panel::before{content:"";position:absolute;left:14px;top:-1px;width:52px;height:2px;
+  background:var(--ochre);opacity:.85;border-radius:2px}
+.p-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:6px}
+.p-head h2{font-size:17px;font-weight:600;letter-spacing:.03em}
+.p-head em{font-style:normal;font-size:12px;color:var(--dimmer);letter-spacing:.04em}
+.chart{flex:1;min-height:0;width:100%}
+
+/* 数字卡 */
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1;align-content:center}
+.kpi{background:var(--panel-2);border-radius:10px;padding:10px 8px;text-align:center}
+.kpi b{display:block;font-family:var(--font-num);font-size:27px;font-weight:500;color:var(--sand)}
+.kpi b i{font-style:normal;font-size:14px;color:var(--dim);margin-left:2px}
+.kpi span{display:block;margin-top:3px;font-size:12.5px;color:var(--dim)}
+.kpi.accent b{color:var(--ochre)}
+
+.latency{display:flex;align-items:flex-end;gap:14px;flex:1;padding-bottom:4px}
+.latency .big{font-family:var(--font-num);font-size:42px;line-height:1;color:var(--sand)}
+.latency .big i{font-style:normal;font-size:15px;color:var(--dim);margin-left:4px}
+.latency .rng{flex:1;font-size:13px;color:var(--dim);line-height:1.9}
+.latency .rng b{color:var(--sand);font-family:var(--font-num);font-weight:500}
+
+/* ------------------------------------------------------------ 中间 3D */
+.col.center{grid-template-rows:1fr 148px}
+.stage3d{padding:0;overflow:hidden;
+  background:radial-gradient(760px 480px at 50% 30%, rgba(232,220,199,.12), transparent 72%), rgba(0,0,0,.22)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.labels{position:absolute;inset:0;pointer-events:none}
+.lb{position:absolute;left:0;top:0;transform:translate(-50%,-50%);
+  padding:4px 10px;border-radius:9px;font-size:14px;white-space:nowrap;
+  background:rgba(11,14,8,.72);border:1px solid var(--line);
+  opacity:0;transition:opacity .25s ease}
+.lb b{font-weight:600}
+.lb i{font-style:normal;font-size:12px;color:var(--dim);margin-left:6px}
+.lb.bin{font-size:12.5px;color:var(--dim);border-style:dashed;background:rgba(11,14,8,.5)}
+.lb.bin.on{color:var(--sand);border-style:solid}
+.lb.main{border-color:rgba(192,142,58,.7);background:rgba(192,142,58,.18)}
+.title3d{position:absolute;left:22px;top:18px;pointer-events:none}
+.title3d h3{font-size:23px;font-weight:600;letter-spacing:.02em}
+.title3d p{margin-top:5px;font-size:13.5px;color:var(--dim)}
+.title3d code{font-family:var(--font-num);font-size:12.5px;color:var(--ochre)}
+.legend3d{position:absolute;right:20px;top:18px;text-align:right;font-size:12.5px;color:var(--dim);line-height:1.85}
+.legend3d b{color:var(--sand);font-family:var(--font-num);font-weight:500}
+
+/* 四个部件小卡：3D 动画飞到哪一件，对应的卡片就亮起来 */
+.parts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.part{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--residual);
+  border-radius:12px;padding:12px 13px;transition:background .3s ease,border-color .3s ease}
+.part.on{background:var(--panel-2);border-color:rgba(232,220,199,.34)}
+.part .nm{font-size:14.5px;font-weight:600}
+.part .bin{margin-top:7px;font-size:13px}
+.part .prep{margin-top:6px;font-size:12.5px;color:var(--dimmer);line-height:1.7}
+
+/* ---------------------------------------------------------------- 底栏 */
+footer{display:flex;align-items:center;justify-content:space-between;gap:20px;
+  border-top:1px solid var(--line);padding-top:9px;font-size:12.5px;color:var(--dimmer)}
+footer .src code{font-family:var(--font-num);color:var(--dim)}
+footer .tag{color:var(--dim)}
+
+/* 快捷键提示：做成胶囊并提高对比度，12px 的纯灰字在黑底上太难认 */
+#hint{position:fixed;right:18px;bottom:16px;z-index:9;
+  padding:8px 16px;border-radius:999px;
+  background:rgba(11,14,8,.72);border:1px solid rgba(232,220,199,.18);
+  color:#C9BDA4;font-size:12.5px;letter-spacing:.04em;
+  cursor:pointer;backdrop-filter:blur(6px)}
+#hint b{color:#E8DCC7;font-weight:600}
+
+/* ------------------------------- 没有 WebGL 时的 2D 降级示意 */
+.fb{position:absolute;inset:0;overflow:hidden}
+.fb-note{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
+  font-size:12px;color:#7A7264;white-space:nowrap}
+.fb-bins{position:absolute;left:0;right:0;bottom:34px;height:74px;
+  display:grid;grid-template-columns:repeat(4,1fr);justify-items:center;align-items:end}
+.fb-bin{width:74px;height:52px;border:2px solid;border-top-left-radius:8px;
+  border-top-right-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:12.5px;background:rgba(232,220,199,.06);
+  transition:background .25s ease,box-shadow .25s ease}
+.fb-bin.on{background:rgba(232,220,199,.18);box-shadow:0 0 18px rgba(232,220,199,.25)}
+.fb-chip{position:absolute;left:0;top:0;padding:7px 12px;border-radius:10px;
+  background:rgba(11,14,8,.86);border:1px solid rgba(232,220,199,.2);
+  border-left-width:3px;border-left-style:solid;font-size:13.5px;white-space:nowrap;
+  transition:opacity .15s linear}
+.fb-chip b{font-weight:600}
+.fb-chip i{font-style:normal;font-size:12px;color:#9C9280;margin-left:7px}

@@ -1,0 +1,14 @@
+[project]
+name = "aicomp-scene-prototype"
+version = "0.1.0"
+description = "AI+场景创新 参赛原型骨架：Dify + Gradio"
+requires-python = ">=3.10"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+# E402 是刻意允许的：脚本需要先注入 sys.path 才能 import app.*
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]

@@ -1,0 +1,11 @@
+{"id": "q001", "type": "in_scope", "question": "危化品应该如何分类存放？", "expected_keywords": ["易燃", "氧化剂", "强酸", "强碱"], "expected_source": "02_", "expect_refusal": false}
+{"id": "q002", "type": "in_scope", "question": "发现有机溶剂泄漏，第一步该做什么？", "expected_keywords": ["疏散", "火源", "通风"], "expected_source": "03_", "expect_refusal": false}
+{"id": "q003", "type": "in_scope", "question": "实验废液可以直接倒进下水道吗？", "expected_keywords": ["严禁", "下水道"], "expected_source": "02_", "expect_refusal": false}
+{"id": "q004", "type": "in_scope", "question": "化学品溅入眼睛应该冲洗多久？", "expected_keywords": ["15", "洗眼器", "送医"], "expected_source": "03_", "expect_refusal": false}
+{"id": "q005", "type": "in_scope", "question": "气瓶在实验室里应该怎么存放？", "expected_keywords": ["固定", "直立", "5"], "expected_source": "01_", "expect_refusal": false}
+{"id": "q006", "type": "in_scope", "question": "安全巡检多久做一次，发现了隐患要多久整改？", "expected_keywords": ["3", "巡检", "整改"], "expected_source": "01_", "expect_refusal": false}
+{"id": "q007", "type": "in_scope", "question": "今天有大风预警，实验室要注意什么？", "expected_keywords": ["门窗", "预警"], "expected_source": "03_", "expect_refusal": false}
+{"id": "q008", "type": "in_scope", "question": "废液桶最多能装多少？", "expected_keywords": ["80"], "expected_source": "02_", "expect_refusal": false}
+{"id": "q009", "type": "out_of_scope", "question": "请帮我推荐一家附近的火锅店。", "expected_keywords": [], "expected_source": "", "expect_refusal": true}
+{"id": "q010", "type": "out_of_scope", "question": "帮我写一首关于秋天的诗。", "expected_keywords": [], "expected_source": "", "expect_refusal": true}
+{"id": "q011", "type": "out_of_scope", "question": "2026 年世界杯冠军是谁？", "expected_keywords": [], "expected_source": "", "expect_refusal": true}

@@ -1,0 +1,102 @@
+# ============================================================
+# 离线预置识别场景（mock 视觉后端使用）
+#
+# 用途：在没有视觉模型 API Key 的情况下跑通"识别 → 拆解 → 引导"全链路，
+#       以及录制演示视频脚本。
+#
+# ⚠️ 这些不是真实识别结果，不能作为参赛的验证数据。
+#    正式参赛请用真实照片 + 多模态模型跑一遍，并用 eval/run_waste_eval.py 出指标。
+#
+# aliases 用于按图片文件名自动匹配场景，例如上传 "奶茶杯.jpg" 会自动选中 milktea。
+# ============================================================
+
+scenarios:
+  milktea:
+    label: 未喝完的奶茶
+    aliases: [奶茶, 珍珠奶茶, 茶饮, milktea]
+    summary: 一杯未喝完的珍珠奶茶，带塑料杯盖、吸管与封口膜
+    items:
+      - {name: 奶茶杯身, material: PP塑料, confidence: 0.94}
+      - {name: 塑料杯盖, material: PP塑料, confidence: 0.89}
+      - {name: 吸管, material: PP塑料, confidence: 0.86}
+      - {name: 剩余液体, material: 液体, confidence: 0.92}
+      - {name: 珍珠, material: 食物残渣, confidence: 0.88}
+
+  takeout:
+    label: 没吃完的外卖餐盒
+    aliases: [外卖, 餐盒, 打包盒, takeout]
+    summary: 一份没吃完的外卖，塑料餐盒内有剩饭剩菜与汤汁，另附一次性筷子与塑料袋
+    items:
+      - {name: 塑料餐盒, material: PP塑料, confidence: 0.93}
+      - {name: 剩饭菜, material: 食物残渣, confidence: 0.91}
+      - {name: 汤汁, material: 液体, confidence: 0.87}
+      - {name: 一次性筷子, material: 木质, confidence: 0.85}
+      - {name: 塑料袋, material: PE塑料, confidence: 0.82}
+
+  parcel:
+    label: 快递纸箱
+    aliases: [快递, 纸箱, 包裹, parcel]
+    summary: 一个拆开的快递纸箱，箱体带封箱胶带、快递面单与气泡膜
+    items:
+      - {name: 纸箱, material: 瓦楞纸, confidence: 0.95}
+      - {name: 封箱胶带, material: BOPP胶带, confidence: 0.88}
+      - {name: 快递面单, material: 热敏纸, confidence: 0.90}
+      - {name: 气泡膜, material: PE塑料, confidence: 0.83}
+
+  noodle:
+    label: 桶装泡面（含汤）
+    aliases: [泡面, 方便面, 杯面, noodle]
+    summary: 一桶没吃完的泡面，桶内有汤汁与面条，配塑料叉与调料包
+    items:
+      - {name: 泡面桶, material: 淋膜纸, confidence: 0.92}
+      - {name: 汤汁, material: 液体, confidence: 0.90}
+      - {name: 面条, material: 食物残渣, confidence: 0.86}
+      - {name: 塑料叉子, material: PP塑料, confidence: 0.84}
+      - {name: 调料包, material: 复合膜, confidence: 0.80}
+
+  coffee:
+    label: 现制咖啡杯
+    aliases: [咖啡, 拿铁, 美式, coffee]
+    summary: 一杯喝完的现制咖啡，纸杯带塑料盖与纸隔热套，杯内仍有少量残液
+    items:
+      - {name: 纸杯, material: 淋膜纸, confidence: 0.93}
+      - {name: 塑料杯盖, material: PS塑料, confidence: 0.88}
+      - {name: 纸隔热套, material: 纸, confidence: 0.85}
+      - {name: 剩余液体, material: 液体, confidence: 0.82}
+
+  pen:
+    label: 用完的中性笔
+    aliases: [中性笔, 签字笔, 圆珠笔, pen]
+    summary: 一支用完的中性笔，含笔杆、笔芯与笔帽
+    items:
+      - {name: 笔杆, material: 塑料, confidence: 0.90}
+      - {name: 笔芯, material: 塑料含残余墨水, confidence: 0.87}
+      - {name: 笔帽, material: 塑料, confidence: 0.85}
+
+  mask:
+    label: 口罩与消毒湿巾
+    aliases: [口罩, 湿巾, mask]
+    summary: 一只用过的一次性口罩与一片消毒湿巾的独立包装
+    items:
+      - {name: 口罩, material: 无纺布, confidence: 0.92}
+      - {name: 消毒湿巾, material: 无纺布, confidence: 0.86}
+      - {name: 独立包装袋, material: 复合膜, confidence: 0.81}
+
+  cable:
+    label: 废旧数据线与充电头
+    aliases: [数据线, 充电器, 充电头, cable]
+    summary: 一根废旧数据线和一个闲置充电头
+    items:
+      - {name: 数据线, material: 铜与塑料, confidence: 0.91}
+      - {name: 充电头, material: 电子元件与塑料, confidence: 0.89}
+
+  mixed:
+    label: 混合场景（多件垃圾）
+    aliases: [混合, 多种, mixed]
+    summary: 桌面上同时有一杯没喝完的奶茶、一个干净塑料饮料瓶和一张用过的纸巾
+    items:
+      - {name: 奶茶杯身, material: PP塑料, confidence: 0.90}
+      - {name: 塑料杯盖, material: PP塑料, confidence: 0.86}
+      - {name: 剩余液体, material: 液体, confidence: 0.88}
+      - {name: 塑料饮料瓶, material: PET塑料, confidence: 0.92}
+      - {name: 用过的餐巾纸, material: 纸, confidence: 0.89}

@@ -1,0 +1,20 @@
+{"id": "h001", "type": "in_scope", "question": "冷负荷和冷冻水流量的关系式是什么？", "expected_keywords": ["1.163", "温差"], "expected_sources": ["02_"], "expect_refusal": false}
+{"id": "h002", "type": "in_scope", "question": "为什么水流量算出来比标准答案小了很多？", "expected_keywords": ["4.18", "换算"], "expected_sources": ["02_", "04_"], "expect_refusal": false}
+{"id": "h003", "type": "in_scope", "question": "送风量和送风温差应该怎么对应？", "expected_keywords": ["2985", "送风温差"], "expected_sources": ["02_"], "expect_refusal": false}
+{"id": "h004", "type": "in_scope", "question": "水泵扬程需要包含哪些部分？", "expected_keywords": ["最不利环路", "末端设备", "富余"], "expected_sources": ["02_"], "expect_refusal": false}
+{"id": "h005", "type": "in_scope", "question": "风管主管风速取多少合适？", "expected_keywords": ["6", "8"], "expected_sources": ["03_"], "expect_refusal": false}
+{"id": "h006", "type": "in_scope", "question": "人均新风量的下限是多少？", "expected_keywords": ["30"], "expected_sources": ["02_", "03_"], "expect_refusal": false}
+{"id": "h007", "type": "in_scope", "question": "冷冻水供回水温差取多少合适？", "expected_keywords": ["5", "7"], "expected_sources": ["03_"], "expect_refusal": false}
+{"id": "h008", "type": "in_scope", "question": "水管比摩阻的经济范围是多少？", "expected_keywords": ["100", "300"], "expected_sources": ["03_"], "expect_refusal": false}
+{"id": "h009", "type": "in_scope", "question": "冷水机组装机容量应该比计算负荷大多少？", "expected_keywords": ["1.05", "1.2"], "expected_sources": ["03_", "04_"], "expect_refusal": false}
+{"id": "h010", "type": "in_scope", "question": "夏季室内设计温度推荐取多少？", "expected_keywords": ["24", "26"], "expected_sources": ["03_"], "expect_refusal": false}
+{"id": "h011", "type": "in_scope", "question": "课程设计校核范围包括哪些内容？", "expected_keywords": ["自洽", "选型", "参数"], "expected_sources": ["01_"], "expect_refusal": false}
+{"id": "h012", "type": "in_scope", "question": "为什么不自动评判系统形式选得好不好？", "expected_keywords": ["因人而异", "方案"], "expected_sources": ["01_"], "expect_refusal": false}
+{"id": "h013", "type": "in_scope", "question": "压差单位 Pa 和毫米水柱怎么换算？", "expected_keywords": ["9.81"], "expected_sources": ["04_"], "expect_refusal": false}
+{"id": "h014", "type": "in_scope", "question": "改了人均新风量之后要注意什么？", "expected_keywords": ["新风总量", "重算"], "expected_sources": ["02_", "04_"], "expect_refusal": false}
+{"id": "h015", "type": "in_scope", "question": "计算时常见的漏项错误有哪些？", "expected_keywords": ["扬程", "新风负荷", "局部阻力"], "expected_sources": ["04_", "01_"], "expect_refusal": false}
+{"id": "h016", "type": "out_of_scope", "question": "今天中午食堂有什么菜？", "expected_keywords": [], "expected_sources": [], "expect_refusal": true}
+{"id": "h017", "type": "out_of_scope", "question": "帮我写一首关于秋天的诗。", "expected_keywords": [], "expected_sources": [], "expect_refusal": true}
+{"id": "h018", "type": "out_of_scope", "question": "2026 年世界杯冠军是谁？", "expected_keywords": [], "expected_sources": [], "expect_refusal": true}
+{"id": "h019", "type": "edge_case", "question": "暖通空调专业毕业后工资高吗？", "expected_keywords": [], "expected_sources": [], "expect_refusal": true, "note": "含领域词但知识库无法回答，考察门控的边界能力"}
+{"id": "h020", "type": "edge_case", "question": "帮我推荐一款适合家用的空调。", "expected_keywords": [], "expected_sources": [], "expect_refusal": true, "note": "含领域词但属于导购类需求，超出校核助手职责"}

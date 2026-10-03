@@ -1,0 +1,719 @@
+# ============================================================
+# 垃圾分类拆解式投放规则库
+#
+# 设计主张：不追求"识别所有垃圾"，而是解决**复合垃圾的条件化投放**。
+#   单一物品识别已有大量成熟产品；但"一杯没喝完的奶茶怎么扔"
+#   "没洗的外卖餐盒到底是可回收还是其他垃圾"这类问题，
+#   现有产品给不出可执行引导。
+#
+# ⚠️ 各地分类标准存在差异（上海为"湿垃圾/干垃圾"，北京为"厨余垃圾/其他垃圾"），
+#
+#    本文件中的类别归属为**教学演示用通行做法**，
+#    正式参赛前必须对照你所在城市现行分类目录逐条核实。
+# ============================================================
+
+scene_id: waste_sorting
+name: 垃圾分类拆解式投放规则库
+version: "2026.09-demo"
+
+# ---------- 地区标准（标签本地化）----------
+regions:
+  national:
+    name: 通用四分类
+    labels:
+      recyclable: 可回收物
+      hazardous: 有害垃圾
+      kitchen: 厨余垃圾
+      residual: 其他垃圾
+      liquid: 液体（倒入水槽）
+  beijing:
+    name: 北京
+    labels:
+      recyclable: 可回收物
+      hazardous: 有害垃圾
+      kitchen: 厨余垃圾
+      residual: 其他垃圾
+      liquid: 液体（倒入水槽）
+  shanghai:
+    name: 上海
+    labels:
+      recyclable: 可回收物
+      hazardous: 有害垃圾
+      kitchen: 湿垃圾
+      residual: 干垃圾
+      liquid: 液体（倒入水槽）
+  guangzhou:
+    name: 广州
+    labels:
+      recyclable: 可回收物
+      hazardous: 有害垃圾
+      kitchen: 厨余垃圾
+      residual: 其他垃圾
+      liquid: 液体（倒入水槽）
+
+# ---------- 桶位与投放要求 ----------
+bins:
+  recyclable:
+    color: 蓝色
+    requirement: 清空内容物 → 简单冲洗 → 沥干 → 压扁后投放
+  hazardous:
+    color: 红色
+    requirement: 保持包装完整，防止破损渗漏
+  kitchen:
+    color: 绿色
+    requirement: 沥干水分，去除包装物后投放
+  residual:
+    color: 灰色
+    requirement: 沥干水分后投放
+  liquid:
+    color: "-"
+    requirement: 倒入水槽或专用倾倒口，不要倒入垃圾桶
+
+# ============================================================
+# 复合垃圾拆解规则
+# triggers 用于与视觉识别结果做匹配，命中 2 个及以上即认为匹配
+# ============================================================
+composites:
+  - id: C01
+    name: 未喝完的奶茶 / 茶饮
+    aliases: [奶茶, 珍珠奶茶, 奶茶杯, 果茶, 咖啡饮品]
+    triggers: [奶茶杯, 杯盖, 吸管, 液体, 珍珠, 椰果, 封口膜]
+    why: 奶茶是典型复合垃圾，含液体、食物残渣与两种材质的塑料件，必须拆开投放。
+    parts:
+      - name: 剩余液体与珍珠、椰果
+        category: kitchen
+        prep: [倒入厨余垃圾桶并沥干液体, 若液体较多先倒入水槽]
+        pitfall: 整杯连液体一起扔进其他垃圾桶，会造成渗漏与异味
+      - name: 杯身（PP 塑料杯）
+        category: recyclable
+        prep: [倒空, 冲洗, 沥干]
+        conditional: 冲洗干净后投可回收物；有残留糖分或奶渍时按其他垃圾投放
+        pitfall: 没冲洗就直接投可回收物，糖分与奶渍会污染整桶回收物
+      - name: 杯盖（PP / PS）
+        category: recyclable
+        prep: [冲洗, 沥干]
+        conditional: 与杯身分离后单独投放
+        pitfall: 连着杯身一起扔，杯盖常被漏掉
+      - name: 吸管与封口膜
+        category: residual
+        prep: [直接投放]
+        pitfall: 误当成可回收物
+
+  - id: C02
+    name: 没吃完的外卖餐盒
+    aliases: [外卖, 餐盒, 打包盒, 便当盒]
+    triggers: [餐盒, 塑料盒, 剩饭菜, 一次性筷子, 塑料袋, 汤]
+    why: 外卖垃圾的核心难点是"餐盒是否冲洗干净"决定它属于可回收还是其他垃圾。
+    parts:
+      - name: 剩饭剩菜与汤汁
+        category: kitchen
+        prep: [汤汁倒入水槽, 固体食物倒入厨余桶]
+        pitfall: 连汤带盒一起扔，渗漏并污染其他垃圾
+      - name: 塑料餐盒
+        category: recyclable
+        prep: [倒空, 清洗油污, 沥干, 压扁]
+        conditional: 油污能洗净时投可回收物；油污严重无法洗净时按其他垃圾投放
+        pitfall: 本项是全场景误投率最高的判断点：很多人凭"塑料=可回收"直接投放
+      - name: 一次性筷子与餐具
+        category: residual
+        prep: [直接投放]
+        pitfall: 误当成可回收物（木筷、竹筷均不属于可回收）
+      - name: 盛装用的塑料袋
+        category: residual
+        prep: [直接投放]
+        conditional: 干净无异味的塑料袋可投可回收物；沾染油污时按其他垃圾投放
+
+  - id: C03
+    name: 快递纸箱
+    aliases: [快递箱, 纸箱, 包裹, 纸盒]
+    triggers: [纸箱, 纸盒, 胶带, 快递面单, 气泡膜, 填充物]
+    why: 纸箱本身可回收，但胶带、面单、缓冲物都不能一起投。
+    parts:
+      - name: 瓦楞纸箱
+        category: recyclable
+        prep: [撕掉胶带与面单, 压平, 保持干燥]
+        pitfall: 带胶带整箱投放，胶带属于其他垃圾且影响纸浆回收
+      - name: 封箱胶带
+        category: residual
+        prep: [撕下后单独投放]
+      - name: 快递面单（含个人信息）
+        category: residual
+        prep: [撕下并撕碎姓名、电话、地址, 再投放]
+        pitfall: 整张面单直接扔掉会泄露个人信息，这是快递点的高频问题
+      - name: 气泡膜与泡沫填充物
+        category: residual
+        prep: [直接投放]
+
+  - id: C04
+    name: 桶装泡面（含汤）
+    aliases: [泡面桶, 方便面, 杯面]
+    triggers: [泡面桶, 汤, 面饼, 纸碗, 叉子, 调料包]
+    why: 泡面桶内壁覆有防水膜，不属于可回收纸类。
+    parts:
+      - name: 剩余汤汁与面条
+        category: kitchen
+        prep: [汤汁倒入水槽, 面条沥干后投厨余桶]
+        pitfall: 连汤扔进桶内，渗漏并产生异味
+      - name: 泡面桶（淋膜纸碗）
+        category: residual
+        prep: [倒空, 沥干后投放]
+        pitfall: 误以为"纸碗=可回收纸类"，但内壁覆膜，不可回收
+      - name: 塑料叉子与调料包
+        category: residual
+        prep: [直接投放]
+
+  - id: C05
+    name: 现制咖啡杯（带盖与隔热套）
+    aliases: [咖啡杯, 纸杯, 拿铁, 美式]
+    triggers: [咖啡杯, 杯盖, 隔热套, 液体, 吸管, 搅拌棒]
+    why: 三层材质（纸杯本体 + 塑料盖 + 纸隔热套），只有其中一部分可回收。
+    parts:
+      - name: 剩余饮品
+        category: liquid
+        prep: [倒入水槽]
+        pitfall: 残液留在杯内，导致纸杯无法回收
+      - name: 纸杯本体（内壁覆膜）
+        category: residual
+        prep: [倒空, 沥干后投放]
+        pitfall: 误当成可回收纸类
+      - name: 塑料杯盖
+        category: recyclable
+        prep: [冲洗, 沥干]
+        pitfall: 常被连着纸杯一起扔掉
+      - name: 纸隔热套
+        category: residual
+        prep: [直接投放]
+        conditional: 保持干燥洁净、无油污时可投可回收物
+
+  - id: C06
+    name: 用完的中性笔
+    aliases: [笔, 中性笔, 签字笔, 圆珠笔]
+    triggers: [笔杆, 笔芯, 笔帽, 弹簧, 墨水]
+    why: 笔杆与笔芯材质不同，且都难以回收，属于高频误投物品。
+    parts:
+      - name: 笔芯（含残余墨水）
+        category: residual
+        prep: [直接投放]
+        pitfall: 误以为"塑料笔芯=可回收"，残余墨水会污染回收物
+      - name: 笔杆与笔帽
+        category: residual
+        prep: [直接投放]
+        conditional: 如有"文具回收"专用箱，优先投入专用箱
+
+  - id: C07
+    name: 一次性口罩 + 消毒湿巾
+    aliases: [口罩, 湿巾, 酒精湿巾]
+    triggers: [口罩, 耳挂, 湿巾, 包装袋]
+    why: 疫情期间投放点最常见的一类，容易混进可回收物。
+    parts:
+      - name: 一次性口罩
+        category: residual
+        prep: [耳挂剪断或对折后扎紧, 再投放]
+        pitfall: 直接投可回收物；未扎紧还可能被风吹散
+      - name: 消毒湿巾
+        category: residual
+        prep: [直接投放]
+        pitfall: 误以为"湿巾是纸"而投可回收，但无纺布不属于纸类
+      - name: 独立包装袋
+        category: residual
+        prep: [直接投放]
+
+  - id: C08
+    name: 废旧充电器与数据线
+    aliases: [充电器, 数据线, 充电头, 耳机线]
+    triggers: [充电器, 充电头, 数据线, 插头, 线缆, 耳机线, 电子产品, 电子元件]
+    why: 属于电子废弃物，常被直接扔进其他垃圾。
+    parts:
+      - name: 数据线与充电头
+        category: recyclable
+        prep: [捆绑整齐后投放, 优先投入电子产品回收箱]
+        pitfall: 直接扔其他垃圾，浪费铜等可回收金属
+
+# ============================================================
+# 单一物品规则（易错清单：高频误投）
+# ============================================================
+singles:
+  - keys: [用过的餐巾纸, 餐巾纸, 卫生纸, 纸巾, 擦手纸]
+    name: 用过的纸巾
+    category: residual
+    pitfall: 误以为"纸都可回收"，但纸巾水溶性强、已污染，不可回收
+    reference: 纸巾、卫生纸因纤维短、遇水降解，不属于可回收纸类
+
+  - keys: [一次性纸杯, 纸杯]
+    name: 一次性纸杯
+    category: residual
+    pitfall: 内壁覆防水膜，不属于可回收纸类
+
+  - keys: [废纸, 废旧纸张, 废纸片, 杂纸]
+    name: 废纸
+    category: recyclable
+    prep: [保持干燥, 展平后投放]
+    conditional: 干净干燥的废纸可回收；被水浸湿、沾有油污或食物残渣时按其他垃圾投放
+    pitfall: 湿透或沾油的纸已成为其他垃圾，投进可回收物会污染整桶
+
+  - keys: [一次性杯子, 一次性水杯, 塑料杯, 透明杯]
+    name: 一次性杯子
+    category: residual
+    prep: [倒空, 沥干后投放]
+    note: 纸杯内壁覆膜、塑料杯多为混合材质，两者都难以回收；只有干净完整的 PET 饮料瓶属可回收物
+    pitfall: 误以为"杯子都能回收"
+
+  - keys: [吸管, 塑料吸管, 纸吸管, 搅拌棒]
+    name: 吸管与搅拌棒
+    category: residual
+    prep: [直接投放]
+    pitfall: 体积小、材质多为 PP 或覆膜纸，不具备回收价值
+
+  - keys: [枯草, 枯叶, 落叶, 树枝, 杂草, 干花]
+    name: 枯枝落叶
+    category: kitchen
+    prep: [去除塑料绳与包装, 沥干]
+    note: 少量枝叶可投厨余垃圾；成堆的园林绿化垃圾应送专门的绿化垃圾堆放点
+    pitfall: 混在塑料袋里一起扔，导致厨余垃圾无法处理
+
+  - keys: [塑料饮料瓶, 矿泉水瓶, PET瓶, 饮料瓶]
+    name: 塑料饮料瓶（PET）
+    category: recyclable
+    prep: [倒空, 冲洗, 压扁, 瓶盖单独投放]
+
+  - keys: [玻璃瓶, 啤酒瓶, 玻璃罐]
+    name: 玻璃瓶
+    category: recyclable
+    prep: [倒空, 冲洗]
+    pitfall: 破碎玻璃应包裹后投其他垃圾，避免划伤保洁人员
+
+  - keys: [易拉罐, 金属罐, 铝罐, 铁罐, 罐体, 圆柱形罐体, 饮料罐]
+    name: 金属易拉罐
+    category: recyclable
+    prep: [倒空, 冲洗, 压扁]
+
+  - keys: [干净塑料袋, 塑料袋]
+    name: 塑料袋
+    category: recyclable
+    conditional: 仅限干净、未沾染油污时；沾污后按其他垃圾投放
+    pitfall: 投放点最常见的边界判断错误
+
+  - keys: [一次性筷子, 一次性餐具, 木筷, 竹筷, 塑料勺, 塑料叉, 叉子, 餐具]
+    name: 一次性餐具
+    category: residual
+    pitfall: 误当成可回收物
+
+  - keys: [果皮, 果核, 香蕉皮, 苹果核, 橘子皮, 橙子皮, 西瓜皮, 柚子皮, 果皮果核]
+    name: 果皮果核
+    category: kitchen
+    prep: [沥干水分]
+
+  - keys: [塑料餐盒, 透明塑料餐盒, 食品容器, 一次性餐盒, 打包盒]
+    name: 塑料餐盒
+    category: recyclable
+    prep: [倒空, 清洗油污, 沥干, 压扁]
+    conditional: 清洗干净后可回收；油污严重无法洗净时按其他垃圾投放
+    pitfall: 本项是投放点误投率最高的判断点：很多人凭"塑料=可回收"直接投放
+
+  - keys: [塑料托盘, 黑色塑料托盘, 塑料垫, 泡沫托盘, 生鲜托盘]
+    name: 塑料托盘
+    category: residual
+    prep: [倒空残渣, 压碎后投放]
+    pitfall: 生鲜与食品托盘多为混合材质或严重污染，不具备回收价值
+
+  - keys: [剩饭, 剩菜, 菜叶, 食物残渣]
+    name: 剩饭剩菜
+    category: kitchen
+    prep: [沥干水分, 去除包装物]
+    pitfall: 带着外卖盒一起投厨余
+
+  - keys: [大棒骨, 骨头, 榴莲壳, 椰子壳]
+    name: 大棒骨与硬壳
+    category: residual
+    pitfall: 大棒骨难以降解且易损坏处理设备，不属于厨余垃圾
+
+  - keys: [充电电池, 锂电池, 纽扣电池, 手机电池]
+    name: 充电电池
+    category: hazardous
+    note: 含重金属，必须投有害垃圾
+
+  - keys: [干电池, 碱性电池, 5号电池, 7号电池]
+    name: 普通碱性干电池
+    category: residual
+    note: 现行主流做法为低汞化后按其他垃圾投放；部分城市仍按有害垃圾，请以当地目录为准
+
+  - keys: [过期药品, 药片, 药瓶, 药盒]
+    name: 过期药品及包装
+    category: hazardous
+    prep: [连同包装一起投放, 不要拆散]
+
+  - keys: [水银温度计, 温度计, 荧光灯管, 节能灯]
+    name: 含汞物品与荧光灯管
+    category: hazardous
+    prep: [避免破损, 破损后密封包裹再投放]
+
+  - keys: [快递面单, 面单, 快递单]
+    name: 快递面单
+    category: residual
+    prep: [撕碎个人信息部分]
+    note: 优先做隐私处理再投放
+
+  - keys: [气泡膜, 泡沫, 珍珠棉, 缓冲材料]
+    name: 缓冲包装材料
+    category: residual
+
+  - keys: [笔芯]
+    name: 笔芯
+    category: residual
+
+  - keys: [口香糖]
+    name: 口香糖
+    category: residual
+    prep: [用纸包裹后投放]
+
+  - keys: [猫砂, 宠物粪便]
+    name: 猫砂与宠物粪便
+    category: residual
+
+  - keys: [口罩]
+    name: 一次性口罩
+    category: residual
+    prep: [扎紧后投放]
+
+  # ---------- 高频物品 ----------
+  - keys: [打印纸, 草稿纸, 传单, 复印纸, 单面纸, A4纸]
+    name: 打印纸与草稿纸
+    category: recyclable
+    prep: [保持干燥平整, 去除订书钉与塑料封套]
+    conditional: 干净干燥时可回收；沾有油污或食物残渣时按其他垃圾投放
+    pitfall: 最常见的一类误投：沾了油渍的草稿纸被投进可回收物
+    note: 单面打印纸建议先用完背面再回收
+
+  - keys: [试卷, 作业纸, 实验报告, 手写笔记, 讲义]
+    name: 试卷与作业纸
+    category: recyclable
+    prep: [撕碎含姓名与学号的部分, 保持干燥]
+    pitfall: 整叠直接投放会泄露个人信息；被水浸湿后不可回收
+    note: 含姓名、学号、成绩的页面建议撕碎后再投放
+
+  - keys: [旧耳机, 耳机, 耳塞]
+    name: 废旧耳机
+    category: recyclable
+    prep: [线材捆绑整齐, 优先投入电子产品回收箱]
+    pitfall: 直接扔其他垃圾，浪费铜线等可回收金属
+    note: 含锂电池的无线耳机在部分城市要求投有害垃圾，请以当地目录为准
+
+  - keys: [充电宝, 移动电源]
+    name: 充电宝
+    category: recyclable
+    prep: [保持完整, 不要挤压穿刺, 优先投入电子产品回收箱]
+    note: 含锂电池，存在地区差异：多数城市按可回收物或电子废弃物回收，部分城市要求投有害垃圾
+    pitfall: 直接扔其他垃圾；破损的充电宝有起火风险，应单独交由回收点处理
+
+  - keys: [一次性手套, 塑料手套, 橡胶手套]
+    name: 一次性手套
+    category: residual
+    prep: [直接投放]
+    pitfall: 实验室与食堂场景常见，误投可回收物
+
+  # ---------- 投放点混投高频物品 ----------
+  # 以下规则依据真实照片识别结果补充：原规则库只覆盖复合垃圾，
+  # 对"投放点里已经混在一起的东西"覆盖不足（实测覆盖率仅 38%）。
+  - keys: [塑料瓶, 矿泉水瓶, 饮料瓶, 透明塑料瓶, 小塑料瓶, 塑料瓶身]
+    name: 塑料瓶
+    category: recyclable
+    prep: [倒空, 冲洗, 沥干, 压扁, 瓶盖单独投放]
+    pitfall: 带液体直接投放会污染整桶可回收物；标签无需撕除
+
+  - keys: [瓶盖, 塑料瓶盖, 塑料盖, 黑色瓶盖, 金属瓶盖]
+    name: 瓶盖
+    category: recyclable
+    prep: [冲洗, 沥干, 与瓶身分开投放]
+    note: 瓶盖体积小，建议攒够一定数量再投，避免散落
+
+  - keys: [纸盒, 白色纸盒, 纸盒碎片, 纸盒包装, 包装纸盒]
+    name: 纸盒
+    category: recyclable
+    prep: [清空内容物, 压平, 保持干燥]
+    conditional: 干净干燥时可回收；沾染油污或液体后按其他垃圾投放
+    pitfall: 用于盛装食品的复合纸盒常内壁覆膜，需确认是否可直接回收
+
+  - keys: [蛋托, 纸质蛋托, 纸浆蛋托, 鸡蛋托]
+    name: 纸质蛋托
+    category: recyclable
+    prep: [保持干燥, 压平]
+    pitfall: 被蛋液污染后按其他垃圾投放
+
+  - keys: [药片泡罩包装, 泡罩包装, 铝塑板, 药板, 药片包装]
+    name: 药品泡罩包装
+    category: hazardous
+    prep: [连同残余药片一起投放, 不要拆散]
+    note: 药品及其直接包装按有害垃圾投放，以所在城市目录为准
+    pitfall: 未吃完的药片被拆散后混入其他垃圾
+
+  - keys: [泡沫, 白色泡沫, 发泡塑料, 泡沫塑料, 泡沫碎片, 珍珠棉]
+    name: 泡沫塑料
+    category: residual
+    prep: [尽量压碎减小体积后投放]
+    pitfall: 泡沫体积大但回收价值低，多数城市按其他垃圾投放，不要投可回收
+
+  - keys: [复合包装膜, 铝箔包装, 食品包装袋, 包装袋残片, 软包装膜, 铝箔袋,
+           包装物, 黑色包装物, 复合包装]
+    name: 复合包装袋（铝箔复合膜）
+    category: residual
+    prep: [清空残渣, 压扁后投放]
+    pitfall: 复合膜无法分离材质，回收价值低，不属于可回收物
+
+  - keys: [塑料薄膜, 塑料包装碎片, 透明塑料薄膜, 塑料碎片, 塑料外壳碎片]
+    name: 塑料薄膜与碎片
+    category: residual
+    prep: [直接投放]
+    conditional: 大片干净无污染的可回收；碎小、受污染的按其他垃圾投放
+    pitfall: 被污染或过于碎裂的塑料不再具备回收价值
+
+  - keys: [塑料梳子, 梳子, 塑料日用品, 牙刷, 塑料玩具]
+    name: 塑料日用品
+    category: residual
+    prep: [直接投放]
+    pitfall: 虽是塑料，但多为混合材质、回收价值低，属于其他垃圾
+
+  - keys: [标签纸, 广告纸, 说明书, 宣传单, 彩色印刷纸屑, 包装纸]
+    name: 标签纸与印刷纸
+    category: recyclable
+    prep: [保持干燥, 去除塑料覆膜]
+    pitfall: 覆膜标签与贴纸背胶部分不可回收，能撕下的应撕下
+
+  - keys: [瓶身标签, 商品标签, 贴纸]
+    name: 商品标签
+    category: recyclable
+    prep: [保持干燥]
+    conditional: 普通纸质标签可回收；塑料覆膜标签与贴纸背胶按其他垃圾投放
+    note: 瓶身标签无需特意撕下，随瓶身一起回收即可
+
+  # ---------- 大件与废品（第二组真实照片暴露的缺口）----------
+  # 真实投放点照片里出现大量木材、废金属、家电外壳、轮胎、织物等"大件/废品"，
+  # 这类物品通常不能投四分类桶，需要专门的回收渠道。
+  - keys: [木块, 木板, 木框, 木质框架, 木制托盘, 木托盘, 木材, 木条, 木箱, 木制品]
+    name: 木材与木制品
+    category: residual
+    prep: [去除金属连接件与钉子, 拆解到可搬运尺寸]
+    note: 少量木块按其他垃圾投放；成件家具、木托盘属于大件垃圾，
+          不能投入四分类桶，应送到大件垃圾堆放点或预约回收
+    pitfall: 整件木家具塞进垃圾桶，导致桶体损坏与清运困难
+
+  - keys: [铁皮, 铁板, 生锈铁板, 金属管, 金属板, 废钢铁, 铁架, 金属框架, 钢管]
+    name: 废金属
+    category: recyclable
+    prep: [去除附着物, 边缘锋利处包裹处理]
+    note: 废金属回收价值高；大件金属制品同样属于大件垃圾，宜送废品回收点
+    pitfall: 锈蚀严重或体积过大的金属件被直接扔进其他垃圾桶
+
+  - keys: [电线, 电线束, 电缆, 线缆, 铜芯线]
+    name: 废旧电线电缆
+    category: recyclable
+    prep: [盘绕捆扎后投放]
+    note: 含铜芯，回收价值高，属于电子废弃物类；宜交给废品回收或电子废弃物回收点
+    pitfall: 直接扔进其他垃圾桶，浪费铜资源
+
+  - keys: [家电外壳, 洗衣机外壳, 冰箱外壳, 空调外壳, 电器外壳, 家电残件]
+    name: 废旧家电外壳与残件
+    category: recyclable
+    prep: [保持完整, 优先联系家电回收渠道]
+    note: 整台家电属于大件垃圾/电子废弃物，不能投入四分类桶；
+          可联系后勤部门或参加电子废弃物回收活动
+    pitfall: 家电随意丢弃在桶边，既占道又存在安全隐患
+
+  - keys: [轮胎, 橡胶轮胎, 轮胎残片, 橡胶块, 橡胶制品]
+    name: 橡胶制品与轮胎
+    category: residual
+    prep: [直接投放小件；整条轮胎属于大件垃圾，需专门回收]
+    pitfall: 橡胶难以自然降解，不能投可回收物
+
+  - keys: [织物, 织物碎片, 布料, 衣物, 旧衣服, 床单, 被褥]
+    name: 织物与旧衣物
+    category: residual
+    prep: [保持干燥, 装袋后投放]
+    note: 成色较好的旧衣物应投入旧衣物回收箱或捐赠；
+          被褥、床垫属于大件垃圾，需要专门回收
+    pitfall: 完好的旧衣物被当成其他垃圾扔掉，浪费可再利用资源
+
+  - keys: [塑料桶, 塑料盆, 塑料筐, 蓝色塑料桶, 塑料容器]
+    name: 硬质塑料桶盆
+    category: recyclable
+    prep: [倒空, 冲洗, 沥干]
+    conditional: 干净完整时可回收；破损严重或油污无法洗净时按其他垃圾投放
+    pitfall: 体积大的塑料桶不压扁就直接投放，显著占用桶容
+
+  - keys: [泡沫盒, 白色泡沫盒, 泡沫块, 泡沫塑料块, 泡沫板, 保丽龙]
+    name: 泡沫塑料制品
+    category: residual
+    prep: [尽量压碎减小体积]
+    pitfall: EPS 泡沫体积大、回收价值低，多数城市按其他垃圾投放
+
+  - keys: [纸板, 纸板箱, 纸板箱碎片, 瓦楞纸, 纸板残片, 纸盒残片]
+    name: 纸板与瓦楞纸
+    category: recyclable
+    prep: [撕除胶带, 压平, 保持干燥]
+    pitfall: 被水浸湿或油污污染的纸板不可回收
+
+  - keys: [纸袋, 棕色纸袋, 牛皮纸袋]
+    name: 纸袋
+    category: recyclable
+    prep: [保持干燥, 去除提手与内衬]
+    conditional: 干净干燥时可回收；沾有油污时按其他垃圾投放
+
+  - keys: [滤芯, 净水器滤芯, 空气滤芯, 滤网]
+    name: 滤芯与滤网
+    category: residual
+    prep: [直接投放]
+    pitfall: 内含纤维与复合材质，无法回收
+
+  - keys: [陶瓷, 破碎陶瓷, 陶瓷碎片, 花盆碎片]
+    name: 陶瓷碎片
+    category: residual
+    prep: [用厚纸包裹后投放]
+    pitfall: 陶瓷不属于可回收物，未包裹会划伤保洁人员
+
+  - keys: [蛋壳, 鸡蛋壳]
+    name: 蛋壳
+    category: kitchen
+    prep: [沥干水分]
+
+  - keys: [面包, 三明治, 糕点, 面食, 米饭, 面条, 水果, 蔬菜]
+    name: 食物残渣
+    category: kitchen
+    prep: [沥干水分, 去除包装物]
+    pitfall: 带包装一起投厨余是最常见的混投
+
+  - keys: [破碎玻璃瓶, 玻璃碎片, 碎玻璃, 碎瓷片]
+    name: 破碎玻璃与陶瓷
+    category: residual
+    prep: [用厚纸或硬盒包裹, 标注"碎玻璃"后投放]
+    pitfall: 破碎玻璃不属于可回收物，且未包裹会划伤保洁人员
+    note: 完整玻璃瓶可回收；破损后按其他垃圾投放，安全优先
+
+  - keys: [金属开罐器, 金属件, 金属拉环, 铁片, 铜片, 金属碎片, 螺丝, 螺钉, 螺母, 小五金]
+    name: 金属制品
+    category: recyclable
+    prep: [洗净, 沥干]
+    pitfall: 小件金属常被当作其他垃圾扔掉
+
+  - keys: [人造革, 钱包碎片, 卡包碎片, 皮革, 布料]
+    name: 皮革与织物制品
+    category: residual
+    prep: [直接投放]
+    note: 成色良好、可再利用的旧衣物与包袋可投入旧衣物回收箱
+    pitfall: 破旧无法再利用的皮革制品属于其他垃圾
+
+  # 电子废弃物：整机与零部件统一处理
+  - keys: [手机外壳, 手机屏幕, 手机键盘, 手机后盖, 手机面板, 手机机身, 电路板,
+           主板, 芯片, 内存卡插槽, SIM卡托盘, 摄像头模组, 扬声器网罩, 充电接口,
+           显示屏边框, 排线连接器, 振动马达, 天线模块, 屏蔽罩, 液晶屏, 触摸屏,
+           内部支架, 电子元件, 功能机机身, 键盘按键, 耳机插孔]
+    name: 电子废弃物零部件
+    category: recyclable
+    prep: [保持完整, 优先投入电子废弃物回收箱或参加电子产品回收活动]
+    note: 手机、电脑等电子产品整机与零部件属于电子废弃物；多数城市按可回收物处理，
+          部分城市设有专门的电子废弃物回收渠道，以当地目录为准
+    pitfall: 直接扔进其他垃圾桶，既浪费可回收金属，也带来环境风险
+
+  # ---------- 社区与户外场景（第三批真实照片暴露的缺口）----------
+  # 第三批照片从投放点扩到社区街道、河道与户外堆积点，
+  # 第一遍跑出 93.92% 覆盖率，缺口集中在装修废料、户外杂物与长尾包装物上。
+  # 以下 15 条按通用四分类口径补齐，跑完覆盖率回到 100%。
+
+  - keys: [石膏板, 纸面石膏板, 石膏条, 石膏块]
+    name: 石膏板
+    category: residual
+    prep: [装袋, 送到装修垃圾临时堆放点]
+    note: 装修产生的石膏板、砖块、混凝土块属于装修（建筑）垃圾，不进四分类桶，
+          需要送到指定堆放点或预约清运
+    pitfall: 直接投进其他垃圾桶会超重，且边缘尖锐容易划破清运袋
+
+  - keys: [混凝土块, 水泥块, 混凝土碎块, 水泥墩]
+    name: 混凝土块
+    category: residual
+    prep: [装袋, 送到装修垃圾临时堆放点]
+    note: 属于装修（建筑）垃圾，不进四分类桶
+    pitfall: 当成其他垃圾丢进桶里，桶体和提手容易被压坏
+
+  - keys: [砖块, 红砖, 碎砖, 瓷砖碎片, 瓦片]
+    name: 砖块与瓷砖
+    category: residual
+    prep: [装袋, 送到装修垃圾临时堆放点]
+    pitfall: 混进其他垃圾桶会增加清运重量与破损风险
+
+  - keys: [塑料型材, 塑料框, PVC型材, 塑料门窗框, 塑料边角料]
+    name: 塑料型材
+    category: recyclable
+    prep: [清掉泥沙, 沥干]
+    note: 干净的硬质塑料型材属于可回收物；沾满水泥、油漆的按其他垃圾投放
+    pitfall: 带着水泥残渣投进可回收物，会污染整桶回收物
+
+  - keys: [塑料包装膜, 塑料薄膜, 收缩膜, 保鲜膜, 缠绕膜]
+    name: 塑料包装膜
+    category: residual
+    prep: [直接投放]
+    note: 薄膜类塑料轻薄、易缠绕分拣设备，多数城市不收，按其他垃圾投放
+    pitfall: 误以为"塑料都能回收"而投进可回收物
+
+  - keys: [编织袋, 蛇皮袋, 麻袋, 尼龙袋]
+    name: 编织袋
+    category: residual
+    prep: [倒空, 直接投放]
+    pitfall: 装满杂物整袋丢进桶里，保洁还得重新拆袋分拣
+
+  - keys: [垃圾袋, 黑色垃圾袋, 手提垃圾袋]
+    name: 用过的垃圾袋
+    category: residual
+    prep: [倒空后直接投放]
+    pitfall: 连袋一起投进厨余桶，袋子会把整桶厨余拖成其他垃圾
+
+  - keys: [铝箔纸, 锡箔纸, 铝箔包装, 药板铝箔]
+    name: 铝箔纸
+    category: residual
+    prep: [直接投放]
+    note: 干净的纯铝箔有回收价值；沾油沾药的复合铝箔纸按其他垃圾投放
+    pitfall: 当成金属投进可回收物，油污会让整桶回收物降级
+
+  - keys: [玻璃板, 平板玻璃, 玻璃片, 窗玻璃]
+    name: 玻璃板
+    category: recyclable
+    prep: [包好边角, 单独投放]
+    note: 平板玻璃属于可回收物；镜子、钢化玻璃与碎玻璃按其他垃圾投放
+    pitfall: 裸着丢进桶里，容易割破清运袋和保洁的手
+
+  - keys: [烟头, 烟蒂, 烟灰]
+    name: 烟头
+    category: residual
+    prep: [确认完全熄灭后投放]
+    pitfall: 没熄灭就丢进桶里，是垃圾桶起火的常见原因
+
+  - keys: [烧焦残留物, 焦渣, 焚烧残渣, 炭渣]
+    name: 烧焦残留物
+    category: residual
+    prep: [确认完全冷却后装袋投放]
+    pitfall: 没有冷却就投，容易引燃同一桶里的其他垃圾
+
+  - keys: [渔网, 渔线, 尼龙绳网, 网具]
+    name: 渔网与绳网
+    category: residual
+    prep: [团起来捆好再投放]
+    pitfall: 松散的网绳会缠住分拣设备，是分拣线停机的主要原因之一
+
+  - keys: [汽车保险杠, 保险杠, 汽车塑料件, 车灯外壳]
+    name: 汽车塑料件
+    category: residual
+    prep: [送到大件垃圾堆放点或汽修点]
+    note: 属于大件垃圾，不能投四分类桶，需要专门的回收渠道
+    pitfall: 硬塞进其他垃圾桶，直接把桶占满
+
+  - keys: [医用包装袋, 药品包装袋, 输液袋]
+    name: 医用包装袋
+    category: residual
+    prep: [直接投放]
+    note: 未被污染的药品外包装按其他垃圾投放；被污染的针头、输液管、棉签等
+          属于医疗废物，必须投有害垃圾或交回医疗机构
+    pitfall: 把带血带药的医疗废物当普通垃圾投放
+
+  - keys: [防护帽, 蓝色防护帽, 安全帽, 一次性防护帽]
+    name: 防护帽
+    category: residual
+    prep: [直接投放]
+    note: 工地上废弃的防护用品按其他垃圾投放；完好的安全帽可以交回使用单位
+    pitfall: 硬质帽壳被当成可回收塑料，实际回收渠道并不接收

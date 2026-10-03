@@ -1,0 +1,20 @@
+{"id": "s001", "type": "in_scope", "question": "用过的纸巾属于可回收物吗？", "expected_keywords": ["纸巾", "可回收"], "expected_sources": ["03_", "01_"], "expect_refusal": false}
+{"id": "s002", "type": "in_scope", "question": "外卖餐盒需要洗干净再扔吗？", "expected_keywords": ["油污", "洗净"], "expected_sources": ["02_", "03_"], "expect_refusal": false}
+{"id": "s003", "type": "in_scope", "question": "一杯没喝完的奶茶应该怎么扔？", "expected_keywords": ["冲洗", "杯盖"], "expected_sources": ["02_"], "expect_refusal": false}
+{"id": "s004", "type": "in_scope", "question": "快递纸箱要撕掉胶带吗？", "expected_keywords": ["胶带"], "expected_sources": ["01_", "03_", "02_"], "expect_refusal": false}
+{"id": "s005", "type": "in_scope", "question": "泡面桶算可回收纸类吗？", "expected_keywords": ["覆", "膜"], "expected_sources": ["03_"], "expect_refusal": false}
+{"id": "s006", "type": "in_scope", "question": "上海的湿垃圾对应其他城市的哪一类？", "expected_keywords": ["厨余"], "expected_sources": ["04_"], "expect_refusal": false}
+{"id": "s007", "type": "in_scope", "question": "大棒骨属于厨余垃圾吗？", "expected_keywords": ["其他垃圾"], "expected_sources": ["03_", "01_"], "expect_refusal": false}
+{"id": "s008", "type": "in_scope", "question": "普通干电池应该扔哪个桶？", "expected_keywords": ["其他垃圾"], "expected_sources": ["03_", "01_"], "expect_refusal": false}
+{"id": "s009", "type": "in_scope", "question": "投放垃圾之前需要做哪些标准动作？", "expected_keywords": ["倒空", "冲洗", "沥干"], "expected_sources": ["01_"], "expect_refusal": false}
+{"id": "s010", "type": "in_scope", "question": "判断一件东西能不能回收需要满足什么条件？", "expected_keywords": ["干净", "材质"], "expected_sources": ["01_"], "expect_refusal": false}
+{"id": "s011", "type": "in_scope", "question": "复合垃圾拆解有哪几个步骤？", "expected_keywords": ["分离", "拆分"], "expected_sources": ["02_"], "expect_refusal": false}
+{"id": "s012", "type": "in_scope", "question": "快递面单为什么建议撕碎？", "expected_keywords": ["个人信息", "隐私"], "expected_sources": ["01_", "03_"], "expect_refusal": false}
+{"id": "s013", "type": "in_scope", "question": "消毒湿巾属于纸类吗？", "expected_keywords": ["无纺布"], "expected_sources": ["03_"], "expect_refusal": false}
+{"id": "s014", "type": "in_scope", "question": "塑料餐盒的类别应该怎么判断？", "expected_keywords": ["条件", "冲洗", "油污"], "expected_sources": ["02_", "01_"], "expect_refusal": false}
+{"id": "s015", "type": "in_scope", "question": "一次性口罩应该怎么投放？", "expected_keywords": ["扎紧", "其他垃圾"], "expected_sources": ["03_", "01_"], "expect_refusal": false}
+{"id": "s016", "type": "out_of_scope", "question": "今天下午有没有篮球赛？", "expected_keywords": [], "expected_sources": [], "expect_refusal": true}
+{"id": "s017", "type": "out_of_scope", "question": "帮我写一首关于秋天的诗。", "expected_keywords": [], "expected_sources": [], "expect_refusal": true}
+{"id": "s018", "type": "out_of_scope", "question": "2026 年世界杯冠军是谁？", "expected_keywords": [], "expected_sources": [], "expect_refusal": true}
+{"id": "s019", "type": "edge_case", "question": "学校附近哪家奶茶店好喝？", "expected_keywords": [], "expected_sources": [], "expect_refusal": true, "note": "含领域词但属于推荐类需求，考察门控的边界能力"}
+{"id": "s020", "type": "edge_case", "question": "垃圾分类这个政策是哪一年开始的？", "expected_keywords": [], "expected_sources": [], "expect_refusal": true, "note": "政策历史问题，知识库未收录"}

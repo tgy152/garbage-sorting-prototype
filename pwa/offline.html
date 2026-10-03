@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>网络不可用 · 垃圾分类投放引导助手</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    margin: 0; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    background: #E8DCC7; color: #2E2A20;
+    font-family: "Noto Serif SC", "Songti SC", "Microsoft YaHei", serif;
+    padding: 24px; text-align: center;
+  }
+  .card {
+    max-width: 30rem; background: #F3EBDC;
+    border-radius: 20px; padding: 32px 28px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .12);
+  }
+  h1 { margin: 0 0 12px; font-size: 22px; }
+  p { margin: 0 0 10px; line-height: 1.8; font-size: 15px; color: #4E5643; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #12150D; color: #E9ECE3; }
+    .card { background: #1C2114; }
+    p { color: #A9B39B; }
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>当前没有网络</h1>
+    <p>识别功能需要把照片发到云端模型，因此必须联网使用。</p>
+    <p>请连上网络再打开。也可以先用离线预置场景看看效果。</p>
+  </div>
+</body>
+</html>

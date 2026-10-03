@@ -1,0 +1,250 @@
+# ============================================================
+# 暖通课程设计「计算自洽性」校核规则库
+#
+# 设计原则：只校核计算过程的内部自洽性与取值合理性，
+# 不评判设计方案优劣（方案因人而异，但物理关系是硬性的）。
+#
+# ⚠️ 所有 reference 字段中的条文号均标注为「待核对」，
+#    提交参赛材料前必须逐条对照现行规范核实并补全。
+# ============================================================
+
+scene_id: hvac_design_check
+name: 暖通课程设计计算自洽性校核规则
+version: "2026.09-demo"
+
+# 中文表头 → 内部字段名。学生可直接用中文表头填表。
+header_aliases:
+  房间编号: room_id
+  房间名称: room_name
+  夏季室内温度: t_in_summer
+  夏季室内温度℃: t_in_summer
+  夏季相对湿度: rh_summer
+  夏季相对湿度%: rh_summer
+  冬季室内温度: t_in_winter
+  冬季室内温度℃: t_in_winter
+  人员数量: occupants
+  人均新风量: fresh_air_per_person
+  人均新风量m3每人每小时: fresh_air_per_person
+  新风量: fresh_air_total
+  新风量m3每小时: fresh_air_total
+  夏季冷负荷: cooling_load
+  夏季冷负荷kW: cooling_load
+  冷冻水供水温度: chw_supply
+  冷冻水供水温度℃: chw_supply
+  冷冻水回水温度: chw_return
+  冷冻水回水温度℃: chw_return
+  冷冻水流量: chw_flow
+  冷冻水流量m3每小时: chw_flow
+  送风温差: supply_air_dt
+  送风温差℃: supply_air_dt
+  送风量: supply_air_flow
+  送风量m3每小时: supply_air_flow
+  风管主管风速: duct_main_velocity
+  风管主管风速m每秒: duct_main_velocity
+  水管比摩阻: pipe_specific_friction
+  水管比摩阻Pa每米: pipe_specific_friction
+  最不利环路阻力: worst_loop_resistance
+  最不利环路阻力Pa: worst_loop_resistance
+  末端设备阻力: equipment_resistance
+  末端设备阻力Pa: equipment_resistance
+  水泵扬程: pump_head
+  水泵扬程Pa: pump_head
+  所选冷机容量: chiller_capacity
+  所选冷机容量kW: chiller_capacity
+
+field_labels:
+  room_id: 房间编号
+  room_name: 房间名称
+  t_in_summer: 夏季室内设计温度
+  rh_summer: 夏季室内相对湿度
+  t_in_winter: 冬季室内设计温度
+  occupants: 人员数量
+  fresh_air_per_person: 人均新风量
+  fresh_air_total: 新风量
+  cooling_load: 夏季冷负荷
+  chw_supply: 冷冻水供水温度
+  chw_return: 冷冻水回水温度
+  chw_flow: 冷冻水流量
+  supply_air_dt: 送风温差
+  supply_air_flow: 送风量
+  duct_main_velocity: 风管主管风速
+  pipe_specific_friction: 水管比摩阻
+  worst_loop_resistance: 最不利环路阻力
+  equipment_resistance: 末端设备阻力
+  pump_head: 水泵扬程
+  chiller_capacity: 所选冷机容量
+
+units:
+  t_in_summer: ℃
+  rh_summer: "%"
+  t_in_winter: ℃
+  fresh_air_per_person: m³/(h·人)
+  fresh_air_total: m³/h
+  cooling_load: kW
+  chw_supply: ℃
+  chw_return: ℃
+  chw_flow: m³/h
+  supply_air_dt: ℃
+  supply_air_flow: m³/h
+  duct_main_velocity: m/s
+  pipe_specific_friction: Pa/m
+  worst_loop_resistance: Pa
+  equipment_resistance: Pa
+  pump_head: Pa
+  chiller_capacity: kW
+
+# 权重：error 扣 15 分，warning 扣 5 分，用于生成房间得分
+severity_penalty:
+  error: 15
+  warning: 5
+
+rules:
+  # ---------- 一、室内设计参数 ----------
+  - id: R01
+    title: 夏季室内设计温度
+    category: 设计参数取值
+    kind: range
+    field: t_in_summer
+    allowed: [22, 28]
+    recommended: [24, 26]
+    severity: error
+    reference: 民用建筑供暖通风与空气调节设计规范，舒适性空调室内设计参数（条文号待核对现行版本）
+    common_mistake: 按"越冷越舒适"取 22℃ 以下，或直接沿用冬季温度
+    suggestion: 舒适性空调夏季室内温度宜取 24~26℃；取值偏低会显著抬高冷负荷与装机容量
+
+  - id: R02
+    title: 夏季室内相对湿度
+    category: 设计参数取值
+    kind: range
+    field: rh_summer
+    allowed: [30, 70]
+    recommended: [40, 65]
+    severity: error
+    reference: 民用建筑供暖通风与空气调节设计规范，舒适性空调室内设计参数（条文号待核对现行版本）
+    common_mistake: 直接照抄教材例题的 60%，未按房间用途调整
+    suggestion: 舒适性空调夏季相对湿度宜取 40%~65%
+
+  - id: R03
+    title: 冬季室内设计温度
+    category: 设计参数取值
+    kind: range
+    field: t_in_winter
+    allowed: [16, 24]
+    recommended: [18, 22]
+    severity: error
+    reference: 民用建筑供暖通风与空气调节设计规范，舒适性空调室内设计参数（条文号待核对现行版本）
+    common_mistake: 与夏季温度混淆，或取值过高导致热负荷偏大
+    suggestion: 舒适性空调冬季室内温度宜取 18~22℃
+
+  - id: R04
+    title: 人均新风量下限
+    category: 新风与卫生要求
+    kind: threshold
+    field: fresh_air_per_person
+    min: 30
+    severity: error
+    reference: 民用建筑供暖通风与空气调节设计规范，人员所需最小新风量（条文号待核对现行版本）
+    common_mistake: 为降低负荷故意压小新风量，低于卫生要求下限
+    suggestion: 民用建筑主要房间人均最小新风量不应低于 30 m³/(h·人)
+
+  - id: R05
+    title: 新风总量与人员数量自洽
+    category: 新风与卫生要求
+    kind: consistency
+    target: fresh_air_total
+    expr: "occupants * fresh_air_per_person"
+    tolerance: 0.05
+    severity: error
+    reference: 新风量 = 人员数量 × 人均新风量（计算关系自洽性）
+    common_mistake: 先按规范填了人均新风量，新风总量却沿用了上一版的旧数据
+    suggestion: 新风总量应由人员数量与人均新风量相乘得到，改参数后务必联动更新
+
+  # ---------- 二、冷冻水系统 ----------
+  - id: R06
+    title: 冷负荷-水流量-供回水温差自洽
+    category: 水力计算
+    kind: consistency
+    target: chw_flow
+    expr: "cooling_load / (1.163 * (chw_return - chw_supply))"
+    tolerance: 0.05
+    severity: error
+    reference: Q = G·ρ·c·Δt，取 ρ=1000 kg/m³、c=4.187 kJ/(kg·K)，得 G = Q / (1.163·Δt)
+    common_mistake: 直接用 c=4.18 却忘了 m³ 与 kg 的单位换算，导致流量被算小 3.6 倍
+    suggestion: 记住工程换算系数 1.163：G(m³/h) = Q(kW) / [1.163 × Δt(℃)]
+
+  - id: R07
+    title: 冷冻水供回水温差合理性
+    category: 水力计算
+    kind: difference_range
+    high: chw_return
+    low: chw_supply
+    allowed: [3, 10]
+    recommended: [5, 7]
+    severity: error
+    reference: 常规舒适性空调冷冻水供回水温差宜取 5~7℃（条文号待核对现行版本）
+    common_mistake: 温差取到 10℃ 以上，导致风机盘管除湿能力不足、末端选型失效
+    suggestion: 常规系统取 5~7℃；大温差系统需专门论证末端换热能力
+
+  # ---------- 三、风系统 ----------
+  - id: R08
+    title: 冷负荷-送风量-送风温差自洽
+    category: 风系统计算
+    kind: consistency
+    target: supply_air_flow
+    expr: "3600 * cooling_load / (1.2 * 1.005 * supply_air_dt)"
+    tolerance: 0.08
+    severity: error
+    reference: Q = L·ρ·c·Δt/3600，取 ρ=1.2 kg/m³、c=1.005 kJ/(kg·K)
+    common_mistake: 送风量按经验估，与冷负荷、送风温差三者不自洽
+    suggestion: L(m³/h) = 3600·Q(kW) / [1.2 × 1.005 × Δt(℃)] ≈ 2985·Q/Δt
+
+  - id: R09
+    title: 风管主管风速
+    category: 风系统计算
+    kind: range
+    field: duct_main_velocity
+    allowed: [2, 12]
+    recommended: [6, 8]
+    severity: error
+    reference: 民用建筑供暖通风与空气调节设计规范，风管风速推荐值（条文号待核对现行版本）
+    common_mistake: 为缩小管径把主管风速提到 10 m/s 以上，噪声与阻力激增
+    suggestion: 舒适性空调风管主管风速宜取 6~8 m/s，支管 3~5 m/s
+
+  # ---------- 四、水路阻力与设备选型 ----------
+  - id: R10
+    title: 水管比摩阻
+    category: 水力计算
+    kind: range
+    field: pipe_specific_friction
+    allowed: [50, 400]
+    recommended: [100, 300]
+    severity: error
+    reference: 空调水系统经济比摩阻 100~300 Pa/m（条文号待核对现行版本）
+    common_mistake: 未做水力平衡计算，比摩阻随手填或超出经济范围
+    suggestion: 冷冻水管比摩阻宜控制在 100~300 Pa/m
+
+  - id: R11
+    title: 水泵扬程构成完整性
+    category: 设备选型
+    kind: ratio
+    numerator: pump_head
+    denominator: "worst_loop_resistance + equipment_resistance"
+    allowed: [1.0, 1.35]
+    recommended: [1.05, 1.2]
+    severity: error
+    reference: 水泵扬程 = 最不利环路阻力 + 末端设备阻力 + 富余量（计算关系自洽性）
+    common_mistake: 只加最不利环路阻力，漏掉末端设备（表冷器/风机盘管）阻力，扬程严重不足
+    suggestion: 扬程需覆盖最不利环路总阻力并留 5%~20% 富余，漏项会导致实际水流量达不到设计值
+
+  - id: R12
+    title: 冷水机组选型与计算负荷匹配
+    category: 设备选型
+    kind: ratio
+    numerator: chiller_capacity
+    denominator: cooling_load
+    allowed: [1.0, 1.5]
+    recommended: [1.05, 1.2]
+    severity: error
+    reference: 机组装机容量应不小于计算冷负荷并留合理富余（计算关系自洽性）
+    common_mistake: 选型容量小于计算负荷，或盲目放大到 2 倍造成"大马拉小车"
+    suggestion: 装机容量宜为计算负荷的 1.05~1.2 倍；放大过多会长期低负荷率运行、能效恶化

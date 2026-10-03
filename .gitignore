@@ -1,0 +1,46 @@
+# ---- 部署仓库只保留「能跑起来」的最小集合 ----
+# 原型源码、landing、大屏、pwa 会提交；下面这些不进仓库，避免仓库过大。
+
+# Python 环境与缓存
+.venv/
+__pycache__/
+*.pyc
+.ruff_cache/
+.gradio/
+
+# 密钥（绝对不要提交）
+.env
+*.key
+
+# 运行产物
+prototype/data/index/
+prototype/data/exports/
+prototype/eval/out/
+prototype/data/*.log
+prototype/tools/
+
+# 与本仓库部署无关的大目录
+答辩PPT/
+答辩PPT-单页图/
+deck-shots/
+方案书/
+_备份-*/
+_cmp/
+netlify-site/
+refs/
+
+# 与本仓库部署无关的大文件（投稿材料、研究缓存）
+答辩PPT-单文件版.html
+2026AIC-答辩PPT*.pdf
+大屏/preview/
+大屏/数据大屏-单文件版.html
+rules.pdf
+rules.txt
+notice.pdf
+notice.txt
+page_*.html
+text_*.txt
+
+# 桌面与临时文件
+*.psd
+desktop.ini

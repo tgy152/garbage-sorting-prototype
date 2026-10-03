@@ -1,0 +1,43 @@
+{
+  "name": "垃圾分类投放引导助手",
+  "short_name": "垃圾投放引导",
+  "description": "拍照识别垃圾的每个部件，给出投放类别、投前动作与常见误投提示。",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#E8DCC7",
+  "theme_color": "#3A4032",
+  "categories": ["education", "utilities"],
+  "icons": [
+    {
+      "src": "/pwa/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "作品介绍",
+      "short_name": "介绍",
+      "url": "/landing/",
+      "icons": [{ "src": "/pwa/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

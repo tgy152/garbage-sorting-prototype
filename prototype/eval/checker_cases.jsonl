@@ -1,0 +1,6 @@
+{"room_id": "A101", "room_name": "普通教室", "expected_rules": [], "note": "完全正确的对照样本，用于检验误报率（False Positive）"}
+{"room_id": "A102", "room_name": "专业实验室", "expected_rules": ["R06"], "note": "水流量换算系数误用：用 4.18 代替 1.163"}
+{"room_id": "A103", "room_name": "教师办公室", "expected_rules": ["R04", "R05"], "note": "人均新风量不足，且新风总量与人员数不联动"}
+{"room_id": "B201", "room_name": "中型会议室", "expected_rules": ["R01", "R07"], "note": "夏季室温取值偏低，供回水温差超出允许区间"}
+{"room_id": "B202", "room_name": "报告厅", "expected_rules": ["R09", "R11"], "note": "主管风速超标，水泵扬程漏算末端设备阻力"}
+{"room_id": "B203", "room_name": "设备机房", "expected_rules": ["R02", "R03", "R10", "R12"], "note": "湿度与冬季温度越界，比摩阻超标，冷机选型过度放大"}

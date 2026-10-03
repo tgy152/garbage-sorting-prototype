@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>正在打开原型 · 垃圾分类投放引导助手</title>
+
+<!--
+  这个页面只干一件事：把 /app/ 转到原型服务。
+
+  GitHub Pages 不支持 Netlify 那种 _redirects 重定向规则，
+  所以用一个跳转页代替，效果一样。
+
+  ★ 换地址只改下面这一行（Render 部署好之后换成它的固定地址）：
+-->
+<script>
+  const PROTOTYPE_URL = "https://comments-view-climb-supplied.trycloudflare.com/";
+  location.replace(PROTOTYPE_URL);
+</script>
+<noscript><meta http-equiv="refresh" content="0; url=https://comments-view-climb-supplied.trycloudflare.com/"></noscript>
+
+<style>
+  :root { --sand:#E8DCC7; --ink:#2E2A20; --moss:#3A4032; --ink-2:#6B5F49; }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:var(--moss); color:var(--sand); padding:24px;
+    font-family:"Noto Sans SC","Source Han Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  }
+  .card {
+    background:var(--sand); color:var(--ink); border-radius:18px;
+    padding:34px 36px; max-width:520px; width:100%;
+    box-shadow:0 18px 44px rgba(0,0,0,.3);
+  }
+  h1 { margin:0 0 14px; font-size:26px; line-height:1.35; }
+  p { margin:0 0 12px; font-size:15px; line-height:1.8; color:var(--ink-2); }
+  a.btn {
+    display:inline-block; margin-top:16px; padding:13px 26px; border-radius:999px;
+    background:var(--moss); color:var(--sand); text-decoration:none; font-size:15px;
+  }
+  code { background:rgba(58,64,50,.1); border-radius:6px; padding:2px 7px; font-size:14px; }
+  .foot { margin-top:18px; font-size:13px; color:var(--ink-2); opacity:.8; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>正在打开原型…</h1>
+    <p>如果两秒后没有自动跳转，点下面的按钮。</p>
+    <a class="btn" id="go" href="https://comments-view-climb-supplied.trycloudflare.com/">打开原型展示页</a>
+    <p class="foot">
+      跳到的是原型服务，首次打开若显示加载提示，等约一分钟即可（免费实例会休眠）。
+      想先看文字说明，回<a href="/">作品介绍页</a>。
+    </p>
+  </div>
+  <script>
+    document.getElementById('go').href = PROTOTYPE_URL;
+  </script>
+</body>
+</html>

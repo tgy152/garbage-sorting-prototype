@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>垃圾分类投放引导 · 拆解式投放数据大屏（静态演示）</title>
+<meta name="theme-color" content="#0B0E08">
+<!--
+  静态演示版大屏，双击本文件即可打开，不需要起服务、不需要联网。
+
+  参考了可视化大屏的形（深色底 + 发光线条 + 3D 主视觉 + 浮动数据面板），
+  但内容是本项目跑出来的真实数据，没有演示性假数据：
+    28 张真实场景实拍照片、263 个识别部件、规则覆盖率 100%
+    分桶分布：用规则库对 28 张照片逐部件判定后统计，合计 263
+    评测数字：eval/out/ 的两份汇总文件
+    覆盖率迭代：data/exports/ 与 README 里的批次记录
+
+  three.js 与 echarts 都在 vendor/ 目录，断网也能跑。
+-->
+<link rel="stylesheet" href="screen.css">
+</head>
+<body>
+
+<div id="stage">
+
+  <header>
+    <div class="brand">
+      <h1>垃圾分类投放引导助手</h1>
+      <span class="sub">拆开再投 · 复合垃圾的拆解与条件化投放引导</span>
+    </div>
+    <div class="regions">
+      <span class="lbl">地区口径</span>
+      <span class="chip on">通用四分类（当前演示）</span>
+      <span class="chip">北京</span>
+      <span class="chip">上海</span>
+      <span class="chip">广州</span>
+    </div>
+    <div class="clock">
+      <b id="clock-time">--:--:--</b>
+      <span id="clock-date">数据为静态快照</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============================================================ 左栏 -->
+    <section class="col left">
+      <div class="panel">
+        <div class="p-head"><h2>分桶分布</h2><em>28 张实拍 · 逐部件判定</em></div>
+        <div class="chart" id="c-bins"></div>
+      </div>
+
+      <div class="panel">
+        <div class="p-head"><h2>规则库资产</h2><em>教师可改的 YAML</em></div>
+        <div class="kpis">
+          <div class="kpi"><b>8<i>类</i></b><span>复合拆解规则</span></div>
+          <div class="kpi"><b>75<i>项</i></b><span>单品判定规则</span></div>
+          <div class="kpi accent"><b>4<i>套</i></b><span>地区分类口径</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-head"><h2>单张识别耗时</h2><em>云端视觉模型</em></div>
+        <div class="latency">
+          <div class="big">4.55<i>s</i></div>
+          <div class="rng">
+            最快 <b>1.30 s</b>　最慢 <b>10.90 s</b><br>
+            同一张照片命中缓存后不再重复调用
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ 中栏 -->
+    <section class="col center">
+      <div class="panel stage3d">
+        <canvas id="gl"></canvas>
+        <div class="labels" id="labels"></div>
+        <div class="title3d">
+          <h3>一杯没喝完的奶茶，是四件事</h3>
+          <p>规则来源 <code>rules/waste_sorting.yaml</code> 复合规则 C01</p>
+        </div>
+        <div class="legend3d">
+          识别部件 <b>263</b> 个<br>
+          规则覆盖 <b>100%</b>
+        </div>
+      </div>
+      <div class="parts" id="parts"></div>
+    </section>
+
+    <!-- ============================================================ 右栏 -->
+    <section class="col right">
+      <div class="panel">
+        <div class="p-head"><h2>拆解引导评测</h2><em>9 样本 × 4 套口径</em></div>
+        <div class="chart" id="c-guide"></div>
+      </div>
+
+      <div class="panel">
+        <div class="p-head"><h2>问答评测</h2><em>20 道题 · 15 / 3 / 2</em></div>
+        <div class="chart" id="c-qa"></div>
+      </div>
+
+      <div class="panel">
+        <div class="p-head"><h2>规则覆盖率迭代</h2><em>每批照片首次运行</em></div>
+        <div class="chart" id="c-iter"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span class="src">数据出处：分桶统计 <code>data/exports/照片批量识别-…-明细.csv</code> 逐部件判定；
+      评测指标 <code>eval/out/</code>；覆盖率迭代 <code>README.md</code> 批次记录</span>
+    <span class="tag">参赛材料不含学校名称、标识与指导教师信息</span>
+  </footer>
+
+</div>
+
+<div id="hint" title="点击重播拆解动画"><b>F</b> 全屏　<b>R</b> 重播拆解　<b>拖动</b> 旋转视角</div>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/echarts.min.js"></script>
+<script src="screen.js"></script>
+<script src="scene3d.js"></script>
+<script>screenBoot();</script>
+</body>
+</html>
