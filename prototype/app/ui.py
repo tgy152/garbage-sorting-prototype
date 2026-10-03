@@ -775,6 +775,7 @@ def build_demo() -> gr.Blocks:
                 # 手机上既找不到也点不准，所以提到首屏做成 44px 按钮。
                 [
                     ("作品介绍页", "/landing/"),
+                    ("数据大屏", "/screen/"),
                     ("安装到手机", "/app"),
                     ("扫码分享", "/share"),
                 ],
@@ -935,10 +936,11 @@ def build_demo() -> gr.Blocks:
                     render.cta_html(
                         [
                             ("打开作品介绍页", "/landing/"),
+                            ("打开数据大屏", "/screen/"),
                             ("安装到手机", "/app"),
                             ("生成手机二维码", "/share"),
                         ],
-                        "primary,ghost,ghost",
+                        "primary,ghost,ghost,ghost",
                     )
                 )
                 gr.Markdown("")
@@ -1005,6 +1007,7 @@ def share_page_html(base: str) -> str:
     """
     prototype = f"{base}/"
     landing = f"{base}/landing/"
+    screen = f"{base}/screen/"
     is_local = "127.0.0.1" in base or "localhost" in base
     banner = (
         '<p class="banner">这是电脑上的本机地址，手机扫码打不开。'
@@ -1070,6 +1073,7 @@ def share_page_html(base: str) -> str:
 <main class="cards">
   {_share_card("原型演示", "拍照识别与投放引导，答辩现场演示用这个。", prototype)}
   {_share_card("作品介绍页", "给评委看的独立页面：问题、方案、实测数据与迭代过程。", landing)}
+  {_share_card("数据大屏", "覆盖率、判定准确率与四套口径，一屏看完实测结果。", screen)}
 </main>
 <footer>
   <p>想装到手机上？打开 <a href="/app">安装引导</a>，安卓可一键安装，iPhone 有分步说明。</p>
