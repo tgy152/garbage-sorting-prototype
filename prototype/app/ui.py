@@ -673,7 +673,28 @@ def build_demo() -> gr.Blocks:
             for turn in history
             if turn.get("role") in {"user", "assistant"} and turn.get("content")
         ]
-        answer = service.answer(message, past)
+        try:
+            answer = service.answer(message, past)
+        except Exception as exc:  # noqa: BLE001
+            # 现场演示时模型侧可能超时或额度用尽，这里兜底成可读提示，
+            # 而不是把异常直接抛到对话面板上。
+            body = (
+                "这次没能拿到模型回答。\n\n"
+                f"错误信息：`{exc}`\n\n"
+                "可以检查 `.env` 里的 `LLM_API_KEY` / `LLM_BASE_URL` / `LLM_MODEL`，"
+                "或把 `APP_MODE` 改回 `mock`，用离线答案先把流程讲完。"
+            )
+            updated = history + [
+                {"role": "user", "content": message},
+                {"role": "assistant", "content": body},
+            ]
+            return (
+                updated,
+                "",
+                "_模型调用失败_",
+                f"_已处理，共 {len(updated) // 2} 轮对话_",
+            )
+
         body, meta = _render_answer(answer)
 
         updated = history + [

@@ -5,11 +5,8 @@
 #
 # 说明：
 #   · 免费实例闲置 15 分钟会休眠，下次访问约一分钟唤醒（页面上会显示加载提示）；
-#   · 这里先用离线模拟模式（APP_MODE=mock），不消耗任何模型额度；
-#     想用真实多模态识别，在 Render 后台加环境变量：
-#       APP_MODE=direct
-#       VISION_API_KEY=<你的通义千问密钥>
-#       LLM_API_KEY=<你的 DeepSeek 密钥>
+#   · 密钥不写进本文件（仓库是公开的），带 sync: false 的两项在 Render 后台填写；
+#   · 想退回离线演示：把 APP_MODE 改成 mock，并把 VISION_BACKEND 改成 mock。
 #   · 端口必须用平台分配的 $PORT 并绑定 0.0.0.0，否则 Render 探测不到。
 
 services:
@@ -23,6 +20,22 @@ services:
     healthCheckPath: /
     envVars:
       - key: APP_MODE
-        value: mock
+        value: direct
       - key: PYTHON_VERSION
         value: "3.12.6"
+      # 多模态问答（OpenAI 兼容接口，这里用通义千问）
+      - key: LLM_BASE_URL
+        value: https://dashscope.aliyuncs.com/compatible-mode/v1
+      - key: LLM_MODEL
+        value: qwen-plus
+      - key: LLM_API_KEY
+        sync: false
+      # 拍照识别（多模态视觉模型）
+      - key: VISION_BACKEND
+        value: multimodal
+      - key: VISION_BASE_URL
+        value: https://dashscope.aliyuncs.com/compatible-mode/v1
+      - key: VISION_MODEL
+        value: qwen3.5-omni-plus-2026-03-15
+      - key: VISION_API_KEY
+        sync: false
