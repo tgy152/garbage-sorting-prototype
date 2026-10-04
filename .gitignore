@@ -17,6 +17,7 @@ prototype/data/index/
 prototype/data/exports/
 prototype/eval/out/
 prototype/data/*.log
+prototype/*.log
 prototype/tools/
 
 # 与本仓库部署无关的大目录
@@ -44,3 +45,7 @@ text_*.txt
 # 桌面与临时文件
 *.psd
 desktop.ini
+_*.png
+_*.json
+_*.py
+_*.html
