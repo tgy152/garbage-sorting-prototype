@@ -30,6 +30,9 @@ _cmp/
 netlify-site/
 refs/
 videos/
+# 站点上的三段演示视频要提交（PPT 页内链接指向它）
+!docs/videos/
+!docs/videos/**
 
 # 参赛材料（不随部署仓库提交）
 佐证材料/
