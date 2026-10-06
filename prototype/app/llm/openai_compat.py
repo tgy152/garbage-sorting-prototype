@@ -21,12 +21,15 @@ class OpenAICompatBackend:
         model: str,
         temperature: float = 0.3,
         timeout: int = 60,
+        thinking: str = "",
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self.model = model
         self.temperature = temperature
         self.timeout = timeout
+        # DeepSeek 系模型的思考模式开关；留空时不下发该字段，其它供应商不受影响
+        self.thinking = (thinking or "").strip().lower()
         self.name = f"openai-compat:{model}"
 
     def health(self) -> tuple[bool, str]:
@@ -65,6 +68,8 @@ class OpenAICompatBackend:
             "temperature": self.temperature,
             "stream": False,
         }
+        if self.thinking:
+            payload["thinking"] = {"type": self.thinking}
         started = time.perf_counter()
         response = httpx.post(
             f"{self.base_url}/chat/completions",

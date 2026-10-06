@@ -170,11 +170,18 @@ class MultimodalVisionBackend:
         api_key: str,
         model: str,
         timeout: int = 90,
+        thinking: str = "",
+        json_mode: bool = False,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self.model = model
         self.timeout = timeout
+        # DeepSeek 系模型支持 thinking 开关；其它供应商留空即可，
+        # 留空时不会往请求体里塞这个字段。
+        self.thinking = thinking.strip().lower()
+        # 打开后要求接口强制返回合法 JSON（DeepSeek / OpenAI 等支持 response_format）
+        self.json_mode = bool(json_mode)
         self.name = f"multimodal:{model}"
 
     def health(self) -> tuple[bool, str]:
@@ -212,22 +219,36 @@ class MultimodalVisionBackend:
             ],
             "temperature": 0.1,
         }
+        if self.thinking:
+            payload["thinking"] = {"type": self.thinking}
+        if self.json_mode:
+            payload["response_format"] = {"type": "json_object"}
+
+        # 模型偶尔会吐出不合法 JSON（实测出现过一次），失败就原样再问一次。
         started = time.perf_counter()
-        response = httpx.post(
-            f"{self.base_url}/chat/completions",
-            headers={
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json",
-            },
-            json=payload,
-            timeout=self.timeout,
-        )
-        response.raise_for_status()
-        content = (
-            (response.json().get("choices") or [{}])[0].get("message", {}).get("content", "")
-        )
+        content = ""
+        parsed: dict = {}
+        parse_note = ""
+        for attempt in range(2):
+            response = httpx.post(
+                f"{self.base_url}/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Content-Type": "application/json",
+                },
+                json=payload,
+                timeout=self.timeout,
+            )
+            response.raise_for_status()
+            content = (
+                (response.json().get("choices") or [{}])[0].get("message", {}).get("content", "")
+            )
+            parsed, parse_note = parse_vision_json(content)
+            if parsed.get("items"):
+                if attempt:
+                    parse_note = (parse_note + "；第 2 次请求解析成功").strip("；")
+                break
         latency_ms = round((time.perf_counter() - started) * 1000, 1)
-        parsed, parse_note = parse_vision_json(content)
 
         items = [
             DetectedItem(
@@ -279,5 +300,7 @@ def build_vision_backend(settings) -> VisionBackend:
             api_key=settings.vision_api_key,
             model=settings.vision_model,
             timeout=settings.vision_timeout,
+            thinking=getattr(settings, "vision_thinking", ""),
+            json_mode=getattr(settings, "vision_json_mode", False),
         )
     return MockVisionBackend(settings.vision_scenarios_path)

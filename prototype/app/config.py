@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     llm_model: str = "deepseek-chat"
     llm_temperature: float = 0.3
     llm_timeout: int = 60
+    # 问答侧思考模式：留空不发送；DeepSeek 系可填 enabled/disabled
+    llm_thinking: str = ""
 
     embedding_base_url: str = ""
     embedding_api_key: str = ""
@@ -42,6 +44,11 @@ class Settings(BaseSettings):
     vision_api_key: str = ""
     vision_model: str = "qwen-vl-max"
     vision_timeout: int = 90
+    # 思考模式开关：留空则不发送；DeepSeek 系模型可填 disabled 关掉思维链，
+    # 让识别直接返回 JSON，速度更快。取值 enabled / disabled。
+    vision_thinking: str = ""
+    # 要求接口强制返回合法 JSON（DeepSeek 等支持 response_format 的供应商可开）
+    vision_json_mode: bool = False
     # 默认地区分类标准（影响类别名称，如上海为"湿垃圾/干垃圾"）
     region: str = "national"
 

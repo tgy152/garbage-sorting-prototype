@@ -23,19 +23,27 @@ services:
         value: direct
       - key: PYTHON_VERSION
         value: "3.12.6"
-      # 多模态问答（OpenAI 兼容接口，这里用通义千问）
+      # 多模态问答（OpenAI 兼容接口，这里用 DeepSeek）
       - key: LLM_BASE_URL
-        value: https://dashscope.aliyuncs.com/compatible-mode/v1
+        value: https://api.deepseek.com
       - key: LLM_MODEL
-        value: qwen-plus
+        value: deepseek-flash
       - key: LLM_API_KEY
         sync: false
       # 拍照识别（多模态视觉模型）
       - key: VISION_BACKEND
         value: multimodal
       - key: VISION_BASE_URL
-        value: https://dashscope.aliyuncs.com/compatible-mode/v1
+        value: https://api.deepseek.com
       - key: VISION_MODEL
-        value: qwen3.5-omni-plus-2026-03-15
+        value: deepseek-flash
+      # 视觉识别只要 JSON，关掉思维链：实测同一张照片 1.7 秒 vs 25 秒
+      - key: VISION_THINKING
+        value: disabled
+      - key: VISION_JSON_MODE
+        value: "true"
+      # 问答同理，关掉思考后 2.5 秒，开着要 15 秒
+      - key: LLM_THINKING
+        value: disabled
       - key: VISION_API_KEY
         sync: false

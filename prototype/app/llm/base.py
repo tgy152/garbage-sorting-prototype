@@ -38,6 +38,7 @@ def build_backend(settings) -> LLMBackend:
             model=settings.llm_model,
             temperature=settings.llm_temperature,
             timeout=settings.llm_timeout,
+            thinking=getattr(settings, "llm_thinking", ""),
         )
     if backend == "dify":
         from app.llm.dify_chat import DifyChatBackend
