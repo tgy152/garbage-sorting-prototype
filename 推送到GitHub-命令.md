@@ -19,7 +19,7 @@ git config user.email "你的GitHub注册邮箱"
 ```
 
 ```powershell
-git commit -m "垃圾分类投放引导助手：原型 + 作品介绍页 + 数据大屏"
+git commit -m "智识固废：垃圾分类视觉识别与投放引导：原型 + 作品介绍页 + 数据大屏"
 ```
 
 ```powershell

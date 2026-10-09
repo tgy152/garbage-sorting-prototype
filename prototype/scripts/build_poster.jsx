@@ -1,5 +1,5 @@
 /*
- * 在 Photoshop 里排「校园垃圾分类投放引导助手」展示海报。
+ * 在 Photoshop 里排「智识固废：垃圾分类视觉识别与投放引导」展示海报。
  *
  * 结构照着参考海报那两套的共性来：顶部通栏 → 主视觉 → 编号模块（中英标题 + 分隔线）
  * → 底部通栏收尾。配色用作品自己的锚点色（深苔底 + 沙面字 + 赭石点缀），
@@ -180,7 +180,7 @@
     H_05 + GAP_MODULE +
     H_06 + 100 + H_BOTTOM;
 
-  var doc = app.documents.add(W, TOTAL, 72, "海报-垃圾分类投放引导助手",
+  var doc = app.documents.add(W, TOTAL, 72, "海报-智识固废：垃圾分类视觉识别与投放引导",
                               NewDocumentMode.RGB, DocumentFill.WHITE);
   doc.selection.selectAll();
   doc.selection.fill(col(C_SOIL), ColorBlendMode.NORMAL, 100);
@@ -192,7 +192,7 @@
   addRect(doc, 0, y, W, H_TOP, C_BAR);
   addText(doc, "全球校园人工智能算法精英大赛 · AI+场景创新",
           MARGIN, y + 56, 19, F_SANS, C_MUTED, "left");
-  addText(doc, "校园垃圾分类投放引导助手",
+  addText(doc, "智识固废：垃圾分类视觉识别与投放引导",
           MARGIN, y + 106, 32, F_BOLD, C_SAND, "left");
   addText(doc, "参赛作品 · 原型演示",
           W - MARGIN, y + 106, 19, F_SANS, C_EN, "right");

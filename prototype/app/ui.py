@@ -31,7 +31,7 @@ from app.service import SceneService
 from app.vision import MockVisionBackend, build_vision_backend
 
 # 作品名称，会同时出现在浏览器标签页与页面主标题
-APP_TITLE = "垃圾分类投放引导助手 · 原型演示"
+APP_TITLE = "智识固废：垃圾分类视觉识别与投放引导 · 原型演示"
 
 # 主题向 Organic 锚点靠拢：全站人文衬线、大圆角、暖中性色
 # Fraunces 是锚点限定的显示衬线，本机未安装，走 Google Fonts；
@@ -1041,7 +1041,7 @@ def share_page_html(base: str) -> str:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>扫码打开 · 垃圾分类投放引导助手</title>
+<title>扫码打开 · 智识固废：垃圾分类视觉识别与投放引导</title>
 <style>
   :root {{
     --soil: #3A4032; --sand: #E8DCC7; --ink: #2E2A20;
@@ -1111,7 +1111,7 @@ _APP_PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>安装到手机 · 垃圾分类投放引导助手</title>
+<title>安装到手机 · 智识固废：垃圾分类视觉识别与投放引导</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#3A4032">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1476,8 +1476,8 @@ def main() -> None:
     files_root = settings.project_root.parent
     deliverable_files = {
         "report": (
-            files_root / "方案书" / "2026AIC-垃圾分类拍照识别与投放引导-作品方案.pdf",
-            "2026AIC-垃圾分类拍照识别与投放引导-作品方案.pdf",
+            files_root / "方案书" / "2026AIC-智识固废：垃圾分类视觉识别与投放引导-作品方案.pdf",
+            "2026AIC-智识固废：垃圾分类视觉识别与投放引导-作品方案.pdf",
         ),
         "deck": (
             files_root / "答辩PPT" / "2026AIC-答辩PPT.pdf",
