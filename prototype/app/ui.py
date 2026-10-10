@@ -61,7 +61,7 @@ PWA_HEAD = """
 <!-- 用 black 不用 black-translucent：后者会让页面顶到状态栏底下，
      首屏标题被刘海和状态栏压住。black 是不透明状态栏，内容从它下面开始。 -->
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="垃圾投放引导">
+<meta name="apple-mobile-web-app-title" content="智识固废">
 <link rel="icon" type="image/png" sizes="192x192" href="/pwa/icon-192.png">
 <link rel="apple-touch-icon" href="/pwa/apple-touch-icon.png">
 <script>
@@ -1117,7 +1117,7 @@ _APP_PAGE = """<!doctype html>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="垃圾投放引导">
+<meta name="apple-mobile-web-app-title" content="智识固废">
 <link rel="icon" type="image/png" sizes="192x192" href="/pwa/icon-192.png">
 <link rel="apple-touch-icon" href="/pwa/apple-touch-icon.png">
 <style>
